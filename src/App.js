@@ -9,17 +9,17 @@ import {
 
 import { AuthProvider } from "./contexts/AuthContext";  //ez a korbecsomagolo ->user mindenhol elerheto lesz
 import Layout from "./components/Layout"; //oldalkeret (benne nav+ ahova az oldalak kerulnek)
-//import LoginPage from "./pages/LoginPage";   //siman csak a login
+import LoginPage from "./pages/LoginPage";   //siman csak a login
 //import HomePage from "./pages/HomePage";  //home
 //import NoPage from "./pages/NoPage";  //404
 
 //utvonalak
 //FONTOOSSS => a router egy sima JS objektum, NEM JSX KOMPONENS!!!!
 const router = createBrowserRouter([
-  //{
-  //  path: "/login",   //path-> melyik url-t figyelje
-  //  element: <LoginPage />, //element-> melyik react component legyen renderelve
-  //},
+  {
+    path: "/login",   //path-> melyik url-t figyelje
+    element: <LoginPage />, //element-> melyik react component legyen renderelve
+  },
   //a fentire pl:
   /*
     ha a searchbar: http://localhost:3000/login
