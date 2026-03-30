@@ -4,22 +4,22 @@ import React from "react";
 import {
   createBrowserRouter,  //ezzel hozzuk letre a router-t js objektumkent, ahol meghat az utvonalak listajat
   RouterProvider, //ezzel mukodnek a rout linkek
-  Navigate, //atiranyit
+  //Navigate, //atiranyit
 } from "react-router-dom";
 
 import { AuthProvider } from "./contexts/AuthContext";  //ez a korbecsomagolo ->user mindenhol elerheto lesz
 import Layout from "./components/Layout"; //oldalkeret (benne nav+ ahova az oldalak kerulnek)
-import LoginPage from "./pages/LoginPage";   //siman csak a login
-import HomePage from "./pages/HomePage";  //home
-import NoPage from "./pages/NoPage";  //404
+//import LoginPage from "./pages/LoginPage";   //siman csak a login
+//import HomePage from "./pages/HomePage";  //home
+//import NoPage from "./pages/NoPage";  //404
 
 //utvonalak
 //FONTOOSSS => a router egy sima JS objektum, NEM JSX KOMPONENS!!!!
 const router = createBrowserRouter([
-  {
-    path: "/login",   //path-> melyik url-t figyelje
-    element: <LoginPage />, //element-> melyik react component legyen renderelve
-  },
+  //{
+  //  path: "/login",   //path-> melyik url-t figyelje
+  //  element: <LoginPage />, //element-> melyik react component legyen renderelve
+  //},
   //a fentire pl:
   /*
     ha a searchbar: http://localhost:3000/login
@@ -35,18 +35,19 @@ const router = createBrowserRouter([
         //(ez olyan mint a laravel layouts/app.blade.php)
     element: <Layout />,    
     //children => ezek azok az oldalak amik a <layout> outlet-jebe kerulnek
-    children: [
+    //____children: [
       //index trua = ha /-rol jon be valaki+ nincs megadva utvonal, EZT toltse be
         //pl: ha vki siman ezt irja be: http://localhost:3000/ akk atiranyitjuk a home page-re
-      { index: true, element: <Navigate to="/home" replace /> },
+      //____{ index: true, element: <Navigate to="/home" replace /> },
       //  /home
-      { path: "home", element: <HomePage /> },
+      //____{ path: "home", element: <HomePage /> },
+      //____{ path: "teachers", element: <TeachersPage /> },
       
-    ],
-  },
-  {
-    path: "*",
-    element: <NoPage />,
+   //____ ],
+  //____},
+  //____{
+  //____  path: "*",
+  //____  element: <NoPage />,
   },
 ]);
 
