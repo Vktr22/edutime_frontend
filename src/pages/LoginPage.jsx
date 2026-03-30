@@ -1,15 +1,22 @@
 // src/pages/LoginPage.jsx
 import React, { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function LoginPage() {
+    const { login, serverError } = useAuth();
   // lokális state a form mezőkhöz
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   // EGYELŐRE csak logolunk, NINCS backend hívás
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Login submit:", { email, password });
+  const handleSubmit = async(e) => {
+    try {
+        await login({ email, password });
+        console.log("Login succeeded, user loaded in AuthContext");
+    } catch (err) {
+        console.error("Login error in LoginPage:", err);
+    }
+
   };
 
   return (
