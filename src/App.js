@@ -10,7 +10,7 @@ import {
 import { AuthProvider } from "./contexts/AuthContext";  //ez a korbecsomagolo ->user mindenhol elerheto lesz
 import Layout from "./components/Layout"; //oldalkeret (benne nav+ ahova az oldalak kerulnek)
 import LoginPage from "./pages/LoginPage";   //siman csak a login
-//import HomePage from "./pages/HomePage";  //home
+import HomePage from "./pages/HomePage";  //home
 //import NoPage from "./pages/NoPage";  //404
 
 //utvonalak
@@ -35,15 +35,14 @@ const router = createBrowserRouter([
         //(ez olyan mint a laravel layouts/app.blade.php)
     element: <Layout />,    
     //children => ezek azok az oldalak amik a <layout> outlet-jebe kerulnek
-    //____children: [
+    children: [
       //index trua = ha /-rol jon be valaki+ nincs megadva utvonal, EZT toltse be
         //pl: ha vki siman ezt irja be: http://localhost:3000/ akk atiranyitjuk a home page-re
       //____{ index: true, element: <Navigate to="/home" replace /> },
       //  /home
-      //____{ path: "home", element: <HomePage /> },
+      { path: "home", element: <HomePage /> },
       //____{ path: "teachers", element: <TeachersPage /> },
-      
-   //____ ],
+    ],
   //____},
   //____{
   //____  path: "*",
