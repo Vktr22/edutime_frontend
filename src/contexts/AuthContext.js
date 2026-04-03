@@ -23,23 +23,32 @@ export function AuthProvider({ children }) {            //AuthProvider egy kompo
     else localStorage.removeItem("token");
   };
 
+  //felhaszn betolt
+  //OLDALFRISSITES UTAN IS!!!! visszatolti a usert, ha van token!!!!
   const loadUser = async () => {
+    const token = getToken();
+
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     try {
-        //jelezzuk, h epp toltjuk a usert be
       setLoading(true);
-      
-      const { data } = await myAxios.get("/api/profile");
-        //eltaroljuk a user state-ben, haaa nincs hiba, innentol az osszes component tudja, h ki van bejelentkezve
+      const { data } = await myAxios.get("/api/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setUser(data);
     } catch (err) {
-        
       console.error("loadUser error:", err);
+      setToken(null);
       setUser(null);
     } finally {
-        //jelzi, h befejeztuk a betoltest
       setLoading(false);
     }
   };
+
 
   //bejelentk
   
