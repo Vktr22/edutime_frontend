@@ -73,17 +73,26 @@ export function AuthProvider({ children }) {            //AuthProvider egy kompo
 
 
   //kijelentk:
+  
   const logout = async () => {
+    const token = getToken();
+
     try {
-      
-        //backenden session+token torlese---post /logout
-      await myAxios.post("/logout");
-      //frontenden uritjuk a user state-t
-      setUser(null);
+      if (token) {
+        await myAxios.post(
+          "/api/logout",
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
     } catch (err) {
       console.error("Logout error:", err);
+    } finally {
+      setToken(null);
+      setUser(null);
     }
   };
+
 
   //ez csak 1x fut le bejelentkezeskor-> amikor az AuthProvider componens eloszor renderel
   useEffect(() => {
