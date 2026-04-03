@@ -11,7 +11,7 @@ import { AuthProvider } from "./contexts/AuthContext";  //ez a korbecsomagolo ->
 import Layout from "./components/Layout"; //oldalkeret (benne nav+ ahova az oldalak kerulnek)
 import LoginPage from "./pages/LoginPage";   //siman csak a login
 import HomePage from "./pages/HomePage";  //home
-//import NoPage from "./pages/NoPage";  //404
+import NoPage from "./pages/NoPage";  //404
 
 //utvonalak
 //FONTOOSSS => a router egy sima JS objektum, NEM JSX KOMPONENS!!!!
@@ -43,10 +43,11 @@ const router = createBrowserRouter([
       { path: "home", element: <HomePage /> },
       //____{ path: "teachers", element: <TeachersPage /> },
     ],
-  //____},
-  //____{
-  //____  path: "*",
-  //____  element: <NoPage />,
+  },
+  //a nopage path FONTOSSS h mindig utso legyen, igy minden nem letezo ut ide esik
+  {
+    path: "*",
+    element: <NoPage />,
   },
 ]);
 
