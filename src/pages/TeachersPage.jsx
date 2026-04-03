@@ -1,8 +1,9 @@
-// src/pages/TeachersPage.jsx
+
 import React, { useEffect, useState } from "react";
-import { myAxios } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
+import { fetchTeachers } from "../services/teachers";
+
 
 export default function TeachersPage() {
   const { user, loading } = useAuth();
@@ -15,28 +16,22 @@ export default function TeachersPage() {
     if (!user || user.role !== "student") return;
 
     
-    const loadTeachers = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const { data } = await myAxios.get("/api/teachers", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setTeachers(data);
-      } catch (err) {
+    
+    const token = localStorage.getItem("token");
+
+    fetchTeachers(token)
+      .then((data) => setTeachers(data))
+      .catch((err) => {
         console.error("Error calling /api/teachers:", err);
         setError("Nem sikerült betölteni a tanárok listáját.");
-      }
-    };  
-    loadTeachers();
+      });
   }, [user]);
 
-  
   if (loading) return <p>Tanárok betöltése...</p>;
   if (!user) return <p>Kérlek jelentkezz be.</p>;
-  if (user.role !== "student") {
-    return <p>Nincs jogosultságod megtekinteni a tanárokat.</p>;
-  }
+  if (user.role !== "student") return <p>Nincs jogosultságod megtekinteni a tanárokat.</p>;
   if (error) return <p>{error}</p>;
+
 
 
   return (
