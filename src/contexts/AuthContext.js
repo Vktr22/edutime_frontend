@@ -15,27 +15,19 @@ export function AuthProvider({ children }) {            //AuthProvider egy kompo
   const [loading, setLoading] = useState(true);
 
 
-  //helper fgv
-  //adatmodositashoz elobb le kell kerni a csrf cookie-kat
-  //igy a backend tudja csekkolni, h a POST keresekhez tartozike ervenyes csrf token!!!
-  const csrf = () => myAxios.get("/sanctum/csrf-cookie");
+
+  const getToken = () => localStorage.getItem("token"); //kiolva atoken ha van
+
+  const setToken = (token) => {                         //elmenti v torl a token
+    if (token) localStorage.setItem("token", token);
+    else localStorage.removeItem("token");
+  };
 
   const loadUser = async () => {
     try {
         //jelezzuk, h epp toltjuk a usert be
       setLoading(true);
-        //csrf cookiet kerunk (fent irtam miert)
-      await csrf();
-        //kerunk egy get-et a backend /api/profile endpointjara
-        /*
-            backenden vmi ilyesmit fog csin:
-            Route::middleware('auth:sanctum')->get('/profile',
-            function (Request $request) {
-                return $request->user();
-            });
-
-            vagyis ha nem vagy bej. ->401 !!!
-         */
+      
       const { data } = await myAxios.get("/api/profile");
         //eltaroljuk a user state-ben, haaa nincs hiba, innentol az osszes component tudja, h ki van bejelentkezve
       setUser(data);
@@ -55,7 +47,7 @@ export function AuthProvider({ children }) {            //AuthProvider egy kompo
     setServerError(null);
     try {
 
-      await csrf();
+      
       //elkuldi a bejelentk. adatokat a backend/login vegpontjara
         //(back: Auth::attempt(), v sajat login controller-> ami session+sanct token+ cookiek beallit)
       await myAxios.post("/login", { email, password });
@@ -75,8 +67,7 @@ export function AuthProvider({ children }) {            //AuthProvider egy kompo
   //kijelentk:
   const logout = async () => {
     try {
-        //megint csrf cookie-t lekerjuk a modosito kereshez
-      await csrf();
+      
         //backenden session+token torlese---post /logout
       await myAxios.post("/logout");
       //frontenden uritjuk a user state-t
