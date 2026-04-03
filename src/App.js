@@ -4,7 +4,7 @@ import React from "react";
 import {
   createBrowserRouter,  //ezzel hozzuk letre a router-t js objektumkent, ahol meghat az utvonalak listajat
   RouterProvider, //ezzel mukodnek a rout linkek
-  //Navigate, //atiranyit
+  Navigate, //atiranyit
 } from "react-router-dom";
 
 import { AuthProvider } from "./contexts/AuthContext";  //ez a korbecsomagolo ->user mindenhol elerheto lesz
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
     children: [
       //index trua = ha /-rol jon be valaki+ nincs megadva utvonal, EZT toltse be
         //pl: ha vki siman ezt irja be: http://localhost:3000/ akk atiranyitjuk a home page-re
-      //____{ index: true, element: <Navigate to="/home" replace /> },
+      { index: true, element: <Navigate to="/home" replace /> },
       //  /home
       { path: "home", element: <HomePage /> },
       //____{ path: "teachers", element: <TeachersPage /> },
