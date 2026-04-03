@@ -42,17 +42,15 @@ export function AuthProvider({ children }) {            //AuthProvider egy kompo
   };
 
   //bejelentk
+  
   const login = async ({ email, password }) => {
-    //elozo hibauzit toroljuk, ha vaaaann
     setServerError(null);
     try {
-
-      
-      //elkuldi a bejelentk. adatokat a backend/login vegpontjara
-        //(back: Auth::attempt(), v sajat login controller-> ami session+sanct token+ cookiek beallit)
-      await myAxios.post("/login", { email, password });
-      //HA a login siker -> kozvetlenul utana lekerd a usert a /api/profile endpointrol es belerakjuk a user state-be
-      await loadUser();
+      const { data } = await myAxios.post("/api/login", { email, password });
+      //backend: {token,user}
+      setToken(data.token);
+      setUser(data.user);
+      return data.user;
     } catch (error) {
       console.error("Login error:", error);
       if (error.response?.status === 422) {
@@ -63,6 +61,7 @@ export function AuthProvider({ children }) {            //AuthProvider egy kompo
       throw error;
     }
   };
+
 
   //kijelentk:
   const logout = async () => {
