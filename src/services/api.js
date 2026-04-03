@@ -10,7 +10,7 @@ export const myAxios = axios.create({
   baseURL: "http://localhost:8000", // <-- Laravel backend URL
   //ez meg, h a bongeszo MINDEN keresnel kuldje el a cookie-kat is erre a backendre
     //azert fontos mert sanctum cookie-s aut-ot haszn
-  withCredentials: true,            // <-- Küldje a cookie-kat (Sanctum)
+  //withCredentials: true,            // <-- Küldje a cookie-kat (Sanctum)
 });
 
 export default myAxios;
