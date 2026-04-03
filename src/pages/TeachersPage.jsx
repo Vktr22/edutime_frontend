@@ -46,7 +46,7 @@ export default function TeachersPage() {
       {teachers.length === 0 && <p>Nincs elérhető tanár.</p>}
 
       {teachers.map((t) => (
-        <div key={t.id}>
+        <div key={t.id} className="teacher-card">
           <h4>{t.name}</h4>
           <p>Email: {t.email}</p>
 
