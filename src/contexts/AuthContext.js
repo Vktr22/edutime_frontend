@@ -99,3 +99,7 @@ export function AuthProvider({ children }) {            //AuthProvider egy kompo
     </AuthContext.Provider>
   );
 }
+//helper hook --- useContext(AuthContext) helyett tudom hasznalni a useAuth() -ot
+export function useAuth() {
+  return useContext(AuthContext);
+}
