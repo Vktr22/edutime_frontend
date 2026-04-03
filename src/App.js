@@ -12,6 +12,7 @@ import Layout from "./components/Layout"; //oldalkeret (benne nav+ ahova az olda
 import LoginPage from "./pages/LoginPage";   //siman csak a login
 import HomePage from "./pages/HomePage";  //home
 import NoPage from "./pages/NoPage";  //404
+import TeachersPage from "./pages/TeachersPage";
 
 //utvonalak
 //FONTOOSSS => a router egy sima JS objektum, NEM JSX KOMPONENS!!!!
@@ -41,7 +42,7 @@ const router = createBrowserRouter([
       { index: true, element: <Navigate to="/home" replace /> },
       //  /home
       { path: "home", element: <HomePage /> },
-      //____{ path: "teachers", element: <TeachersPage /> },
+      { path: "teachers", element: <TeachersPage /> },
     ],
   },
   //a nopage path FONTOSSS h mindig utso legyen, igy minden nem letezo ut ide esik

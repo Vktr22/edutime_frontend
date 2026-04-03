@@ -5,35 +5,39 @@ import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 
 export default function TeachersPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [teachers, setTeachers] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // ha NEM student a user -> ne engedjük be (osszhangban van a backend oute-al: Route::middleware(['auth:sanctum', 'student']))
-  if (user && user.role !== "student") {
+  useEffect(() => {  
+    // ha NEM student a user -> ne engedjük be (osszhangban van a backend oute-al: Route::middleware(['auth:sanctum', 'student']))
+    //de a return ALUL
+    if (!user || user.role !== "student") return;
+
+    
+    const loadTeachers = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const { data } = await myAxios.get("/api/teachers", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setTeachers(data);
+      } catch (err) {
+        console.error("Error calling /api/teachers:", err);
+        setError("Nem sikerült betölteni a tanárok listáját.");
+      }
+    };  
+    loadTeachers();
+  }, [user]);
+
+  
+  if (loading) return <p>Tanárok betöltése...</p>;
+  if (!user) return <p>Kérlek jelentkezz be.</p>;
+  if (user.role !== "student") {
     return <p>Nincs jogosultságod megtekinteni a tanárokat.</p>;
   }
+  if (error) return <p>{error}</p>;
 
-  const loadTeachers = async () => {
-    try {
-      setLoading(true);
-      const { data } = await myAxios.get("/api/teachers");  //api hivas backendhez - valojaban: GET http://localhost:8000/api/teachers
-      setTeachers(data);
-    } catch (err) {
-      console.error("Hiba /api/teachers híváskor:", err);
-      setError("Nem sikerült betölteni a tanárok listáját.");   //ez lentebb az if(error)-kor lesz
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadTeachers();
-  }, []);
-
-  if (loading) return <p>Tanárok betöltése...</p>;  //h felhasznalo baratabb legyen es kiirja, h toltodik az oldal, ne csak random villanjon egyet
-  if (error) return <p>{error}</p>; //ez fentebb a catch agban a setError sor
 
   return (
     <div>
@@ -42,7 +46,7 @@ export default function TeachersPage() {
       {teachers.length === 0 && <p>Nincs elérhető tanár.</p>}
 
       {teachers.map((t) => (
-        <div key={t.id} style={{ marginBottom: "15px" }}>
+        <div key={t.id}>
           <h4>{t.name}</h4>
           <p>Email: {t.email}</p>
 
