@@ -26,3 +26,12 @@ export async function fetchStudentAppointments(token) {
   });
   return data;
 }
+
+//tanar idopontjai sajat
+export async function fetchTeacherAppointments(token) {
+  const { data } = await myAxios.get("/api/teacher/appointments", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}
+
