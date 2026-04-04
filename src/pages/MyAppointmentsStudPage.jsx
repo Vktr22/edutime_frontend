@@ -1,9 +1,13 @@
 import React from "react";
 import { useAuth } from "../contexts/AuthContext";
+import React, { useEffect, useState } from "react";
 
 export default function MyAppointmentsStudPage() {
 
     const { user, loading } = useAuth();
+    //adatfogadas elokeszitese
+    const [appointments, setAppointments] = useState([]);
+    const [error, setError] = useState("");
 
     
     if (loading) return <p>Betöltés...</p>;
