@@ -30,10 +30,32 @@ export default function MyAppointmentsStudPage() {
     if (user.role !== "student") return <p>Ez az oldal csak tanulóknak érhető el.</p>;
 
 
+        
     return (
         <div>
-            <h2>Saját időpontjaim</h2>
-            <p>Itt fognak megjelenni a lefoglalt időpontjaid.</p>
+        <h2>Saját időpontjaim</h2>
+
+        {appointments.length === 0 ? (
+            <p>Még nincs foglalt időpontod.</p>
+        ) : (
+            <table>
+            <thead>
+                <tr>
+                <th>Tanár</th>
+                <th>Időpont</th>
+                </tr>
+            </thead>
+            <tbody>
+                {appointments.map((a) => (
+                <tr key={a.id}>
+                    <td>{a.teacher_name ?? a.teacher?.name ?? "—"}</td>
+                    <td>{a.lesson_time}</td>
+                </tr>
+                ))}
+            </tbody>
+            </table>
+        )}
         </div>
     );
+
 }
