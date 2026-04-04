@@ -18,3 +18,11 @@ export async function bookAppointment(token, teacherId, lessonTime) {
   );
   return data;
 }
+
+
+export async function fetchStudentAppointments(token) {
+  const { data } = await myAxios.get("/api/student/appointments", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}
