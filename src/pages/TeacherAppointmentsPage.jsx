@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { fetchTeacherAppointments } from "../services/appointments";
 
 
 export default function TeacherAppointmentsPage() {
@@ -12,7 +13,14 @@ export default function TeacherAppointmentsPage() {
     useEffect(() => {
         if (!user || user.role !== "teacher") return;
 
-        console.log("Teacher appointments page mounted");
+        const token = localStorage.getItem("token");
+
+        fetchTeacherAppointments(token)
+            .then((data) => setAppointments(data))
+            .catch((err) => {
+            console.error("Error fetching teacher appointments:", err);
+            setError("Nem sikerült betölteni az időpontokat.");
+            });
     }, [user]);
 
     if (loading) return <p>Betöltés...</p>;
