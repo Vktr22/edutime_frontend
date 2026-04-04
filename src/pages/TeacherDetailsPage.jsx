@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchTeacherById } from "../services/teachers";
 import { bookAppointment } from "../services/appointments";
@@ -12,6 +12,7 @@ export default function TeacherDetailsPage() {
         useauth a globalis aut allapotot adja
         lokalis usestate-ek a betoltott tanar adatait +hibakat ha van.
     */
+    const navigate = useNavigate();
     const { id } = useParams();
     const { user, loading } = useAuth();
     const [teacher, setTeacher] = useState(null);
@@ -34,10 +35,23 @@ export default function TeacherDetailsPage() {
 
         try {
             const token = localStorage.getItem("token");
+            /*
+                miert nem a vegen van kezelve a tobbi guard clause-nel????
+                --->A token megléte az adott művelethez (foglaláshoz) szükséges,
+                nem a teljes oldal rendereléséhez.
+                Ezért handler-szintű guard clause-ként kezeljük.
+            */
+            if (!token) {
+                setFormMessage("Nincs bejelentkezés. Kérlek jelentkezz be újra.");
+                return;
+            }
             await bookAppointment(token, id, lessonTime);
 
             setFormMessage("Időpont sikeresen lefoglalva!");
             setLessonTime("");
+
+            navigate("/my-appointments");
+
         } catch (err) {
             console.error("Booking error:", err);
 
