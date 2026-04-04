@@ -32,19 +32,29 @@ export default function TeacherDetailsPage() {
         });
     }, [user, id]);
 
-    
+    //korai kilepesi feltetelek = guard clause-ok
+    if (loading) {
+    return <p>Felhasználó betöltése...</p>;
+    }
+    if (!user) {
+    return <p>Kérem jelentkezzen be.</p>;
+    }
+    if (user.role !== "student") {
+    return <p>Kizárólag tanuló jogosultsággal érhető el ez az oldal.</p>;
+    }
+    if (error) {
+    return <p>{error}</p>;
+    }
+    if (!teacher) {
+    return <p>Tanár betöltése...</p>;
+    }
+
+    //innentol(a return-ban) mar csak jo eset!!
     return (
         <div>
             
             <Link to="/teachers">← Vissza a tanárok oldalra</Link>
             <h2>Kiválasztott tanár adatai</h2>
-
-            {loading && <p>Felhasználó betöltése...</p>}
-            {!loading && !user && <p>Kérem jelentkezzen be.</p>}
-            {!loading && user && user.role !== "student" && (
-                <p>Kizárólag tanuló jogosultsággal érhető el ez az oldal.</p>
-            )}
-
             
             {error && <p>{error}</p>}
             {teacher && (
