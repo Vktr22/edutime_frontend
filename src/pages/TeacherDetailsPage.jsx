@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchTeacherById } from "../services/teachers";
+import { bookAppointment } from "../services/appointments";
 
 
 export default function TeacherDetailsPage() {
@@ -21,17 +22,33 @@ export default function TeacherDetailsPage() {
     const [formMessage, setFormMessage] = useState("");
 
 
-    // STEP 8.3.1 – booking form submit handler (no API call yet)
-    const handleBookingSubmit = (e) => {
+    const handleBookingSubmit = async (e) => {
         e.preventDefault();
         setFormMessage("");
 
-        console.log("Booking request:", {
-            teacherId: id,
-            lesson_time: lessonTime,
-        });
+        // client oldali ell
+        if (!lessonTime.trim()) {
+            setFormMessage("Kérlek adj meg egy időpontot.");
+            return;
+        }
 
-        setFormMessage("Form captured (API call will be added in next step).");
+        try {
+            const token = localStorage.getItem("token");
+            await bookAppointment(token, id, lessonTime);
+
+            setFormMessage("Időpont sikeresen lefoglalva!");
+            setLessonTime("");
+        } catch (err) {
+            console.error("Booking error:", err);
+
+            // backend can return 409 conflict or 422 validation errors
+            //409-- mar foglalt idopont
+            //422-- multbeli idopontot akart foglalni, vaagy rossz formatum
+            const msg =
+            err.response?.data?.message ||
+            "Hiba történt a foglalás során. Próbáld újra.";
+            setFormMessage(msg);
+        }
     };
 
     
