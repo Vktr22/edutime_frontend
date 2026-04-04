@@ -31,8 +31,28 @@ export default function TeacherAppointmentsPage() {
 
     return (
         <div>
-            <h2>Tanár - saját időpontjaim</h2>
-            <p>Itt fognak megjelenni a hozzád tartozó időpontok.</p>
+            <h2>Tanár – saját időpontjaim</h2>
+
+            {appointments.length === 0 ? (
+            <p>Még nincs hozzád tartozó időpont.</p>
+            ) : (
+            <table>
+                <thead>
+                <tr>
+                    <th>Tanuló</th>
+                    <th>Időpont</th>
+                </tr>
+                </thead>
+                <tbody>
+                {appointments.map((a) => (
+                    <tr key={a.id}>
+                    <td>{a.student_name ?? a.student?.name ?? "—"}</td>
+                    <td>{a.lesson_time}</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+            )}
         </div>
     );
 }
