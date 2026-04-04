@@ -9,6 +9,13 @@ export default function MyAppointmentsStudPage() {
     const [appointments, setAppointments] = useState([]);
     const [error, setError] = useState("");
 
+    //belepes utan megjelenik consolelogban
+    useEffect(() => {
+        if (!user || user.role !== "student") return;
+
+        console.log("Student appointments page mounted");
+    }, [user]);
+
     
     if (loading) return <p>Betöltés...</p>;
     if (!user) return <p>Kérlek jelentkezz be.</p>;
