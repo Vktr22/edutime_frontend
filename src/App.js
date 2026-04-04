@@ -14,6 +14,7 @@ import HomePage from "./pages/HomePage";  //home
 import NoPage from "./pages/NoPage";  //404
 import TeachersPage from "./pages/TeachersPage";
 import TeacherDetailsPage from "./pages/TeacherDetailsPage";
+import MyAppointmentsStudPage from "./pages/MyAppointmentsStudPage";
 
 
 //utvonalak
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       { path: "home", element: <HomePage /> },
       { path: "teachers", element: <TeachersPage /> },
       { path: "teachers/:id", element: <TeacherDetailsPage /> },
+      { path: "my-appointments", element: <MyAppointmentsStudPage /> },
     ],
   },
   //a nopage path FONTOSSS h mindig utso legyen, igy minden nem letezo ut ide esik
