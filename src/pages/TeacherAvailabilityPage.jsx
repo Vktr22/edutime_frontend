@@ -18,6 +18,32 @@ export default function TeacherAvailabilityPage() {
     //token
     const token = localStorage.getItem("token");
 
+    // ---- WEEKDAY MAPPING ----
+    const days = {
+        1: "Hétfő",
+        2: "Kedd",
+        3: "Szerda",
+        4: "Csütörtök",
+        5: "Péntek",
+        6: "Szombat",
+        7: "Vasárnap",
+    };
+
+    // ---- GROUPING DATA BY DAY ----
+    const grouped = {
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: [],
+        6: [],
+        7: [],
+    };
+
+    items.forEach((a) => {
+        grouped[a.weekday].push(a);
+    });
+
     //funkc: betolts
     const loadData = () => {
         fetchAvailability(token)
