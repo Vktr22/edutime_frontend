@@ -106,60 +106,100 @@ export default function TeacherAvailabilityPage() {
     if (user.role !== "teacher")
         return <p>Ez az oldal csak tanároknak érhető el.</p>;
 
-    //<p>Oldal betöltve. A funkciók következnek…</p>
     return (
-        <div>
-            <h2>Tanári elérhetőségek (munkaidősávok)</h2>
+        <div className="availability-page">
 
-            <h3>Új időszak hozzáadása</h3>
-            <form onSubmit={handleSubmit}>
-                <label>Hét napja (1–7): </label>
+            <h2 className="availability-title">Tanári elérhetőségeim (munkaidősávok)</h2>
+
+            {/* Új időszak hozzáadása */}
+            <div className="availability-form-section">
+            <h3 className="availability-subtitle">Új időszak hozzáadása</h3>
+
+            <form className="availability-form" onSubmit={handleSubmit}>
+                <div className="form-row">
+                <label htmlFor="weekday">Hét napja (1–7):</label>
                 <input
+                    id="weekday"
                     type="number"
                     min="1"
                     max="7"
                     value={weekday}
                     onChange={(e) => setWeekday(e.target.value)}
+                    className="form-input"
                 />
-                <label>Munkaidő kezdete:</label>
+                </div>
+
+                <div className="form-row">
+                <label htmlFor="start_time">Munkaidő kezdete:</label>
                 <input
+                    id="start_time"
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
+                    className="form-input"
                 />
-                <label>Munkaidő vége:</label>
+                </div>
+
+                <div className="form-row">
+                <label htmlFor="end_time">Munkaidő vége:</label>
                 <input
+                    id="end_time"
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
+                    className="form-input"
                 />
-                <button type="submit">Hozzáadás</button>
+                </div>
+
+                <button type="submit" className="btn-submit">Hozzáadás</button>
             </form>
-            {formMsg && <p>{formMsg}</p>}
 
+            {formMsg && <p className="form-message">{formMsg}</p>}
+            </div>
 
-            <h3>Meglévő időszakok</h3>
-            {items.length === 0 ? (
-            <p>Még nincsenek megadott munkaórák.</p>
-                ) : (
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Nap</th>
-                        <th>Időszak</th>
+            {/* Meglévő idősávok */}
+            <div className="availability-table-section">
+            <h3 className="availability-subtitle">Meglévő időszakok (heti bontás)</h3>
+
+            <table className="availability-table">
+                <thead>
+                <tr>
+                    <th>Nap</th>
+                    <th>Időszakok</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {Object.keys(days).map((day) => (
+                    <tr key={day}>
+                    <td className="weekday-cell">{days[day]}</td>
+
+                    <td className="slots-cell">
+                        {grouped[day].length === 0 ? (
+                        <span className="empty-day">— nincs megadva —</span>
+                        ) : (
+                        grouped[day].map((slot) => (
+                            <div key={slot.id} className="slot-row">
+                            <span className="slot-time">
+                                {slot.start_time} – {slot.end_time}
+                            </span>
+
+                            <button
+                                className="btn-delete"
+                                onClick={() => handleDelete(slot.id)}
+                            >
+                                Törlés
+                            </button>
+                            </div>
+                        ))
+                        )}
+                    </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {items.map((a) => (
-                        <tr key={a.id}>
-                        <td>{a.weekday}</td>
-                        <td>{a.start_time} – {a.end_time}</td>
-                        <td><button onClick={() => handleDelete(a.id)}>Törlés</button></td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            )}
+                ))}
+                </tbody>
+            </table>
+            </div>
+
         </div>
     );
 }
