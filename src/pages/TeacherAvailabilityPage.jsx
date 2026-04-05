@@ -1,7 +1,10 @@
-import React from "react";
-import { useAuth } from "../contexts/AuthContext";
+import React, { useEffect, useState } from "react"; 
+import { useAuth } from "../contexts/AuthContext"; 
+import {fetchAvailability,createAvailability, deleteAvailability} from "../services/availability"; 
 
 export default function TeacherAvailabilityPage() {
+
+    //statek
     const { user, loading } = useAuth();
     //allapotok elokeszitese, h legyen hova tolteni az adatot----items, error
     const [items, setItems] = useState([]);
@@ -12,6 +15,20 @@ export default function TeacherAvailabilityPage() {
     const [endTime, setEndTime] = useState("10:00");
     const [formMsg, setFormMsg] = useState("");
 
+    //token
+    const token = localStorage.getItem("token");
+
+    //funkc: betolts
+    const loadData = () => {
+        fetchAvailability(token)
+            .then((data) => setItems(data))
+            .catch((err) => {
+            console.error("fetchAvailability error:", err);
+            setError("Nem sikerült betölteni az elérhetőségeket.");
+            });
+    };
+
+    //useeffect
     //a componens betoltesekor lekeri a bejelentkezett tanar sajat idopont kezelo feluletet
     useEffect(() => {
         if (!user || user.role !== "teacher") return;
@@ -25,6 +42,9 @@ export default function TeacherAvailabilityPage() {
             setError("Nem sikerült betölteni az időpont kezelőt.");
             });
     }, [user]);
+
+    //inne jon lefele a render, form submit, delete handler, stb.
+    //aztan az oldal strukt
 
     const handleSubmit = async (e) => {
         e.preventDefault();
