@@ -36,6 +36,7 @@ export default function Navigation() {
   const teacherNav = [
     { path: "/home", label: "Kezdőlap" },
     { path: "/teacher/appointments", label: "Foglalások" },
+    { path: "/teacher/availability", label: "Elérhetőségek" },
   ];
 
   const guestNav = [{ path: "/home", label: "Kezdőlap" }];
