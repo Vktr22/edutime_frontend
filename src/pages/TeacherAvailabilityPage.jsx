@@ -45,6 +45,16 @@ export default function TeacherAvailabilityPage() {
 
     };
 
+    const handleDelete = async (id) => {
+        try {
+            await deleteAvailability(token, id);
+            loadData();
+        } catch (err) {
+            console.error("deleteAvailability error:", err);
+            alert("Nem sikerült törölni.");
+        }
+    };
+
     if (loading) return <p>Betöltés...</p>;
     if (!user) return <p>Kérlek jelentkezz be.</p>;
     if (user.role !== "teacher")
@@ -98,6 +108,7 @@ export default function TeacherAvailabilityPage() {
                         <tr key={a.id}>
                         <td>{a.weekday}</td>
                         <td>{a.start_time} – {a.end_time}</td>
+                        <td><button onClick={() => handleDelete(a.id)}>Törlés</button></td>
                         </tr>
                     ))}
                     </tbody>
