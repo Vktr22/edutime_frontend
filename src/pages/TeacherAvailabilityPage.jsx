@@ -7,6 +7,20 @@ export default function TeacherAvailabilityPage() {
     const [items, setItems] = useState([]);
     const [error, setError] = useState("");
 
+    //a componens betoltesekor lekeri a bejelentkezett tanar sajat idopont kezelo feluletet
+    useEffect(() => {
+        if (!user || user.role !== "teacher") return;
+
+        const token = localStorage.getItem("token");
+
+        fetchAvailability(token)
+            .then((data) => setItems(data))
+            .catch((err) => {
+            console.error("fetchAvailability error:", err);
+            setError("Nem sikerült betölteni az időpont kezelőt.");
+            });
+    }, [user]);
+
     if (loading) return <p>Betöltés...</p>;
     if (!user) return <p>Kérlek jelentkezz be.</p>;
     if (user.role !== "teacher")
