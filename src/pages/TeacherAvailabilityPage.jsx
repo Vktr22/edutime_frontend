@@ -6,6 +6,11 @@ export default function TeacherAvailabilityPage() {
     //allapotok elokeszitese, h legyen hova tolteni az adatot----items, error
     const [items, setItems] = useState([]);
     const [error, setError] = useState("");
+    //a form-hoz szukseges statek,-- start_time + end_time + weekday
+    const [weekday, setWeekday] = useState("1");
+    const [startTime, setStartTime] = useState("08:00");
+    const [endTime, setEndTime] = useState("10:00");
+    const [formMsg, setFormMsg] = useState("");
 
     //a componens betoltesekor lekeri a bejelentkezett tanar sajat idopont kezelo feluletet
     useEffect(() => {
@@ -21,6 +26,25 @@ export default function TeacherAvailabilityPage() {
             });
     }, [user]);
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setFormMsg("");
+
+        try {
+            await createAvailability(token, {
+            weekday,
+            start_time: startTime,
+            end_time: endTime,
+            });
+            setFormMsg("Mentve ✅");
+            loadData(); // újratöltjük a listát
+        } catch (err) {
+            console.error("createAvailability error:", err);
+            setFormMsg("Hiba történt a mentés során.");
+        }
+        
+    };
+
     if (loading) return <p>Betöltés...</p>;
     if (!user) return <p>Kérlek jelentkezz be.</p>;
     if (user.role !== "teacher")
@@ -31,7 +55,7 @@ export default function TeacherAvailabilityPage() {
         <div>
             <h2>Tanári elérhetőségek (munkaidősávok)</h2>
 
-            
+
             {items.length === 0 ? (
             <p>Még nincs megadott elérhetőség.</p>
                 ) : (
