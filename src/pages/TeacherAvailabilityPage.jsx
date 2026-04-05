@@ -42,7 +42,7 @@ export default function TeacherAvailabilityPage() {
             console.error("createAvailability error:", err);
             setFormMsg("Hiba történt a mentés során.");
         }
-        
+
     };
 
     if (loading) return <p>Betöltés...</p>;
@@ -55,9 +55,36 @@ export default function TeacherAvailabilityPage() {
         <div>
             <h2>Tanári elérhetőségek (munkaidősávok)</h2>
 
+            <h3>Új időszak hozzáadása</h3>
+            <form onSubmit={handleSubmit}>
+                <label>Hét napja (1–7): </label>
+                <input
+                    type="number"
+                    min="1"
+                    max="7"
+                    value={weekday}
+                    onChange={(e) => setWeekday(e.target.value)}
+                />
+                <label>Munkaidő kezdete:</label>
+                <input
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                />
+                <label>Munkaidő vége:</label>
+                <input
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                />
+                <button type="submit">Hozzáadás</button>
+            </form>
+            {formMsg && <p>{formMsg}</p>}
 
+
+            <h3>Meglévő időszakok</h3>
             {items.length === 0 ? (
-            <p>Még nincs megadott elérhetőség.</p>
+            <p>Még nincsenek megadott munkaórák.</p>
                 ) : (
                 <table>
                     <thead>
