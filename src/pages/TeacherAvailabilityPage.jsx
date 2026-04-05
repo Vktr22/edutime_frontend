@@ -26,10 +26,32 @@ export default function TeacherAvailabilityPage() {
     if (user.role !== "teacher")
         return <p>Ez az oldal csak tanároknak érhető el.</p>;
 
+    //<p>Oldal betöltve. A funkciók következnek…</p>
     return (
         <div>
-        <h2>Tanári elérhetőségek (munkaidősávok)</h2>
-        <p>Oldal betöltve. A funkciók következnek…</p>
+            <h2>Tanári elérhetőségek (munkaidősávok)</h2>
+
+            
+            {items.length === 0 ? (
+            <p>Még nincs megadott elérhetőség.</p>
+                ) : (
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Nap</th>
+                        <th>Időszak</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {items.map((a) => (
+                        <tr key={a.id}>
+                        <td>{a.weekday}</td>
+                        <td>{a.start_time} – {a.end_time}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 }
