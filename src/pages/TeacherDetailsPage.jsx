@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchTeacherById } from "../services/teachers";
 import { bookAppointment } from "../services/appointments";
+import { fetchAvailableSlots } from "../services/availability";
 
 
 export default function TeacherDetailsPage() {
@@ -67,19 +68,19 @@ export default function TeacherDetailsPage() {
         }
     };
 
-    
+    //foglalhato idopontok betoltese
     useEffect(() => {
-        // csak akk kerunk le adatot ha van user stud
         if (!user || user.role !== "student") return;
 
         const token = localStorage.getItem("token");
 
+        setLoadingSlots(true);
         fetchTeacherById(token, id)
-        .then((data) => setTeacher(data))
-        .catch((err) => {
-            console.error("Error fetching teacher:", err);
-            setError("Nem sikerült betölteni a tanár adatait.");
-        });
+            .then((data) => setAvailableSlots(data))
+            .catch((err) => {
+                console.error(err);
+                setSlotError("Nem sikerült betölteni a foglalható időpontokat.");
+            }).finally(() => setLoadingSlots(false));
     }, [user, id]);
 
     //korai kilepesi feltetelek = guard clause-ok
