@@ -26,45 +26,26 @@ export default function TeacherDetailsPage() {
     const [loadingSlots, setLoadingSlots] = useState(false);
     const [slotError, setSlotError] = useState("");
 
-    const handleBookingSubmit = async (e) => {
-        e.preventDefault();
-        setFormMessage("");
-
-        // client oldali ell
-        if (!lessonTime.trim()) {
-            setFormMessage("Kérlek adj meg egy időpontot.");
-            return;
-        }
-
+    const handleBooking = async (slotStart) => {
         try {
             const token = localStorage.getItem("token");
-            /*
-                miert nem a vegen van kezelve a tobbi guard clause-nel????
-                --->A token megléte az adott művelethez (foglaláshoz) szükséges,
-                nem a teljes oldal rendereléséhez.
-                Ezért handler-szintű guard clause-ként kezeljük.
-            */
+
             if (!token) {
-                setFormMessage("Nincs bejelentkezés. Kérlek jelentkezz be újra.");
-                return;
+            alert("Nincs bejelentkezés.");
+            return;
             }
-            await bookAppointment(token, id, lessonTime);
 
-            setFormMessage("Időpont sikeresen lefoglalva!");
-            setLessonTime("");
+            await bookAppointment(token, id, slotStart);
 
-            navigate("/my-appointments");
+            alert("Időpont sikeresen lefoglalva!");
+
+            // újratöltjük a foglalható időpontokat
+            const refreshed = await fetchAvailableSlots(token, id);
+            setAvailableSlots(refreshed);
 
         } catch (err) {
-            console.error("Booking error:", err);
-
-            // backend can return 409 conflict or 422 validation errors
-            //409-- mar foglalt idopont
-            //422-- multbeli idopontot akart foglalni, vaagy rossz formatum
-            const msg =
-            err.response?.data?.message ||
-            "Hiba történt a foglalás során. Próbáld újra.";
-            setFormMessage(msg);
+            console.error(err);
+            alert("Nem sikerült lefoglalni az időpontot.");
         }
     };
 
