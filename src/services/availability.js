@@ -1,9 +1,9 @@
 // src/services/availability.js
 import { myAxios } from "./api";
 
-// GET – saját availability lista
-export async function fetchAvailability(token) {
-  const { data } = await myAxios.get("/api/teacher/availability", {
+// Foglalható időpontok lekérése tanárhoz
+export async function fetchAvailability(token, teacherId) {
+  const { data } = await myAxios.get("/api/teachers/${teacherId}/available-slots", {
     headers: { Authorization: `Bearer ${token}` },
   });
   return data;
