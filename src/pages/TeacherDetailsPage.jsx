@@ -112,20 +112,26 @@ export default function TeacherDetailsPage() {
                <p>Email: {teacher.email}</p>
             </div>
 
-            <h3>Időpont foglalása</h3>
-            <form onSubmit={handleBookingSubmit}>
-            <label htmlFor="lesson_time">Időpont (YYYY-MM-DD HH:MM:SS)</label>
-            <input
-                id="lesson_time"
-                type="text"
-                value={lessonTime}
-                onChange={(e) => setLessonTime(e.target.value)}
-                placeholder="2026-04-10 10:00:00"
-            />
-            <button type="submit">Foglalás</button>
-            </form>
+            <h3>Foglalható időpontok</h3>
 
-            {formMessage && <p>{formMessage}</p>}
+            {loadingSlots && <p>Időpontok betöltése...</p>}
+            {slotError && <p>{slotError}</p>}
+
+            {availableSlots.length === 0 && !loadingSlots && (
+                <p>Nincs elérhető időpont.</p>
+            )}
+
+            <div className="slots-container">
+                {availableSlots.map((slot) => (
+                    <button
+                    key={slot.start}
+                    className="slot-button"
+                    onClick={() => handleBooking(slot.start)}
+                    >
+                    {slot.start}
+                    </button>
+                ))}
+            </div>
 
         </div>
     );
