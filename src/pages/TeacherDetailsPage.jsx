@@ -21,7 +21,9 @@ export default function TeacherDetailsPage() {
     const [lessonTime, setLessonTime] = useState("");
     //formmessage majd success/error uzi lesz
     const [formMessage, setFormMessage] = useState("");
-
+    const [availableSlots, setAvailableSlots] = useState([]);
+    const [loadingSlots, setLoadingSlots] = useState(false);
+    const [slotError, setSlotError] = useState("");
 
     const handleBookingSubmit = async (e) => {
         e.preventDefault();
