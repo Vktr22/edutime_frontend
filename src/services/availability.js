@@ -3,9 +3,20 @@ import { myAxios } from "./api";
 
 // Foglalható időpontok lekérése tanárhoz
 export async function fetchAvailableSlots(token, teacherId) {
-  const { data } = await myAxios.get("/api/teachers/${teacherId}/available-slots", {
+  const { data } = await myAxios.get(`/api/teachers/${teacherId}/available-slots`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+  return data;
+}
+
+// TEACHER – saját munkaidősávok lekérése
+export async function fetchAvailability(token) {
+  const { data } = await myAxios.get(
+    "/api/teacher/availability",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
   return data;
 }
 

@@ -50,7 +50,7 @@ const router = createBrowserRouter([
       { path: "teachers", element: <TeachersPage /> },
       { path: "teachers/:id", element: <TeacherDetailsPage /> },
       { path: "my-appointments", element: <MyAppointmentsStudPage /> },
-      { path: "teacher-appointments", element: <TeacherAppointmentsPage /> },
+      { path: "teacher/appointments", element: <TeacherAppointmentsPage /> },
       { path: "teacher/availability", element: <TeacherAvailabilityPage /> },
     ],
   },

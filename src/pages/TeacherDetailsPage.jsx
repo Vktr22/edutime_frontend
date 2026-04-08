@@ -66,15 +66,32 @@ export default function TeacherDetailsPage() {
         if (!user || user.role !== "student") return;
 
         const token = localStorage.getItem("token");
-
         setLoadingSlots(true);
-        fetchTeacherById(token, id)
+
+        fetchAvailableSlots(token, id)
             .then((data) => setAvailableSlots(data))
             .catch((err) => {
                 console.error(err);
                 setSlotError("Nem sikerült betölteni a foglalható időpontokat.");
-            }).finally(() => setLoadingSlots(false));
+            })
+            .finally(() => setLoadingSlots(false));
     }, [user, id]);
+
+
+    useEffect(() => {
+        if (!user || user.role !== "student") return;
+
+        const token = localStorage.getItem("token");
+
+        fetchTeacherById(token, id)
+            .then((data) => setTeacher(data))
+            .catch((err) => {
+                console.error(err);
+                setError("Nem sikerült betölteni a tanár adatait.");
+            });
+    }, [user, id]);
+
+    
 
     //korai kilepesi feltetelek = guard clause-ok
     if (loading) {

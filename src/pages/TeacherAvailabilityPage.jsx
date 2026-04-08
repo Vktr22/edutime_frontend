@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"; 
 import { useAuth } from "../contexts/AuthContext"; 
-import {fetchAvailableSlots,createAvailability, deleteAvailability} from "../services/availability"; 
+import {fetchAvailability,createAvailability, deleteAvailability} from "../services/availability"; 
 
 export default function TeacherAvailabilityPage() {
 
@@ -46,7 +46,7 @@ export default function TeacherAvailabilityPage() {
 
     //funkc: betolts
     const loadData = () => {
-        fetchAvailableSlots(token)
+        fetchAvailability(token)
             .then((data) => setItems(data))
             .catch((err) => {
             console.error("fetchAvailability error:", err);
@@ -58,15 +58,7 @@ export default function TeacherAvailabilityPage() {
     //a componens betoltesekor lekeri a bejelentkezett tanar sajat idopont kezelo feluletet
     useEffect(() => {
         if (!user || user.role !== "teacher") return;
-
-        const token = localStorage.getItem("token");
-
-        fetchAvailableSlots(token)
-            .then((data) => setItems(data))
-            .catch((err) => {
-            console.error("fetchAvailability error:", err);
-            setError("Nem sikerült betölteni az időpont kezelőt.");
-            });
+        loadData();
     }, [user]);
 
     //inne jon lefele a render, form submit, delete handler, stb.
