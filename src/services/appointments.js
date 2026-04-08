@@ -19,6 +19,20 @@ export async function bookAppointment(token, teacherId, lessonTime) {
   return data;
 }
 
+// Diák által kezdeményezett időponttörlés (státuszváltással a backendben)
+export async function cancelStudentAppointment(token, appointmentId) {
+  const { data } = await myAxios.delete(
+    `/api/student/appointments/${appointmentId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return data;
+}
+
 
 export async function fetchStudentAppointments(token) {
   const { data } = await myAxios.get("/api/student/appointments", {
