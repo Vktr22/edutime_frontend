@@ -1,6 +1,7 @@
 import { useAuth } from "../contexts/AuthContext";
 import React, { useEffect, useState } from "react";
 import { fetchStudentAppointments } from "../services/appointments";
+import { cancelStudentAppointment } from "../services/appointments";
 
 export default function MyAppointmentsStudPage() {
 
@@ -8,6 +9,29 @@ export default function MyAppointmentsStudPage() {
     //adatfogadas elokeszitese
     const [appointments, setAppointments] = useState([]);
     const [error, setError] = useState("");
+
+    
+    // Diák időpontjának törlése és lista frissítése
+    const handleCancel = async (appointmentId) => {
+        const token = localStorage.getItem("token");
+
+        if (!window.confirm("Biztosan törölni szeretnéd ezt az időpontot?")) return;
+
+        try {
+            await cancelStudentAppointment(token, appointmentId);
+            alert("Időpont törölve.");
+
+            // lista frissítése
+            setAppointments((prev) =>
+            prev.filter((appt) => appt.id !== appointmentId)
+            );
+        } catch (err) {
+            alert(
+            err.response?.data?.message ||
+            "Nem sikerült törölni az időpontot."
+            );
+        }
+    };
 
     //belepes utan megjelenik consolelogban
     useEffect(() => {
@@ -46,10 +70,18 @@ export default function MyAppointmentsStudPage() {
                 </tr>
             </thead>
             <tbody>
-                {appointments.map((a) => (
-                <tr key={a.id}>
-                    <td>{a.teacher_name ?? a.teacher?.name ?? "—"}</td>
-                    <td>{a.lesson_time}</td>
+                {/* Csak jövőbeli, aktív időpont törölhető */}
+                {appointments.map((appt) => (
+                <tr key={appt.id}>
+                    <td>{appt.teacher.name}</td>
+                    <td>{appt.lesson_time}</td>
+                    <td>
+                    {new Date(appt.lesson_time) > new Date() && appt.status === "active" && (
+                        <button onClick={() => handleCancel(appt.id)}>
+                        Törlés
+                        </button>
+                    )}
+                    </td>
                 </tr>
                 ))}
             </tbody>
