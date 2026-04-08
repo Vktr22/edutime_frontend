@@ -31,21 +31,33 @@ export default function TeacherDetailsPage() {
             const token = localStorage.getItem("token");
 
             if (!token) {
-            alert("Nincs bejelentkezés.");
-            return;
+                alert("Nincs bejelentkezés. Kérlek jelentkezz be újra.");
+                return;
             }
 
+            
+            // 2) Foglalás elküldése a backendnek
+            //    (a slotStart a backend által generált, biztosan foglalható időpont)
             await bookAppointment(token, id, slotStart);
 
+            // 3) Sikeres foglalás visszajelzés
             alert("Időpont sikeresen lefoglalva!");
+            
+            // 4) A foglalható időpontok újratöltése,
+            //    hogy a frissen lefoglalt slot eltűnjön a listából
+            const refreshedSlots = await fetchAvailableSlots(token, id);
+            setAvailableSlots(refreshedSlots);
 
-            // újratöltjük a foglalható időpontokat
-            const refreshed = await fetchAvailableSlots(token, id);
-            setAvailableSlots(refreshed);
 
         } catch (err) {
-            console.error(err);
+            console.error("Booking error:", err);
             alert("Nem sikerült lefoglalni az időpontot.");
+
+            // 5) Backend hibaüzenet kezelése (pl. 409, 422)
+            const msg = err.response?.data?.message ||
+                "Hiba történt a foglalás során. Próbáld újra.";
+
+            alert(msg);
         }
     };
 
