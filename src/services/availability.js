@@ -2,7 +2,7 @@
 import { myAxios } from "./api";
 
 // Foglalható időpontok lekérése tanárhoz
-export async function fetchAvailability(token, teacherId) {
+export async function fetchAvailableSlots(token, teacherId) {
   const { data } = await myAxios.get("/api/teachers/${teacherId}/available-slots", {
     headers: { Authorization: `Bearer ${token}` },
   });

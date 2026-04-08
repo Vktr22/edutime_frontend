@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"; 
 import { useAuth } from "../contexts/AuthContext"; 
-import {fetchAvailability,createAvailability, deleteAvailability} from "../services/availability"; 
+import {fetchAvailableSlots,createAvailability, deleteAvailability} from "../services/availability"; 
 
 export default function TeacherAvailabilityPage() {
 
@@ -46,7 +46,7 @@ export default function TeacherAvailabilityPage() {
 
     //funkc: betolts
     const loadData = () => {
-        fetchAvailability(token)
+        fetchAvailableSlots(token)
             .then((data) => setItems(data))
             .catch((err) => {
             console.error("fetchAvailability error:", err);
@@ -61,7 +61,7 @@ export default function TeacherAvailabilityPage() {
 
         const token = localStorage.getItem("token");
 
-        fetchAvailability(token)
+        fetchAvailableSlots(token)
             .then((data) => setItems(data))
             .catch((err) => {
             console.error("fetchAvailability error:", err);
