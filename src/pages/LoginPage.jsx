@@ -4,7 +4,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-    const { login, serverError } = useAuth();
+  const { login, serverError } = useAuth();
+  const [error, setError] = useState("");
   // lokális state a form mezőkhöz
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,8 +18,11 @@ export default function LoginPage() {
         await login({ email, password });
         //tehat ha a login sikeres volt, mehetunk a /home-ra
         navigate("/home");
-    } catch (err) {
-        console.error("LoginPage handleSubmit error:", err);
+    } catch (err) { // Backendből érkező login hibaüzenet megjelenítése a felhasználónak
+      setError(
+        err.response?.data?.message ||
+        "Hiba történt a bejelentkezés során."
+      );
     }
 
   };
@@ -26,7 +30,7 @@ export default function LoginPage() {
   return (
     <div className="login">
       <h2>Bejelentkezés</h2>
-
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div className="login-field">
           <label htmlFor="email">Email cím</label>
