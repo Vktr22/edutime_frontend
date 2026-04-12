@@ -83,36 +83,70 @@ export default function MyAppointmentsStudPage() {
         
     return (
         <div>
-        <h2>Saját időpontjaim</h2>
+            <h2>Saját időpontjaim</h2>
 
-        {appointments.length === 0 ? (
-            <p>Még nincs foglalt időpontod.</p>
-        ) : (
-            <table>
-            <thead>
-                <tr>
-                <th>Tanár</th>
-                <th>Időpont</th>
-                </tr>
-            </thead>
-            <tbody>
-                {/* Csak jövőbeli, aktív időpont törölhető */}
-                {appointments.map((appt) => (
-                <tr key={appt.id}>
-                    <td>{appt.teacher.name}</td>
-                    <td>{appt.lesson_time}</td>
-                    <td>
-                    {new Date(appt.lesson_time) > new Date() && appt.status === "active" && (
-                        <button onClick={() => handleCancel(appt.id)}>
+            <h3>Következő időpontok</h3>
+
+            {Object.keys(futureGrouped).length === 0 && (
+            <p>Nincs jövőbeli foglalt időpont.</p>
+            )}
+
+            {Object.keys(futureGrouped).map(date => (
+            <div key={date} className="date-block">
+                
+                <h4>
+                {new Date(date).toLocaleDateString("hu-HU", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                })}
+                </h4>
+
+                {futureGrouped[date].map(appt => (
+                <div key={appt.id} className="appointment-card">
+                    
+                    <p><strong>Időpont:</strong> {appt.lesson_time.slice(11, 16)}</p>
+                    <p><strong>Tanár:</strong> {appt.teacher.name}</p>
+
+                    {/* Törlés gomb csak future + active */}
+                    {appt.status === "active" && (
+                    <button onClick={() => handleCancel(appt.id)}>
                         Törlés
-                        </button>
+                    </button>
                     )}
-                    </td>
-                </tr>
+
+                </div>
                 ))}
-            </tbody>
-            </table>
-        )}
+            </div>
+            ))}
+            <h3>Korábbi időpontok</h3>
+
+            {Object.keys(pastGrouped).length === 0 && (
+            <p>Nincs korábbi időpont.</p>
+            )}
+
+            {Object.keys(pastGrouped).map(date => (
+            <div key={date} className="date-block past">
+                
+                <h4>
+                {new Date(date).toLocaleDateString("hu-HU", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                })}
+                </h4>
+
+                {pastGrouped[date].map(appt => (
+                <div key={appt.id} className="appointment-card disabled">
+                    <p><strong>Időpont:</strong> {appt.lesson_time.slice(11, 16)}</p>
+                    <p><strong>Tanár:</strong> {appt.teacher.name}</p>
+                    {/* NINCS törlés gomb */}
+                </div>
+                ))}
+            </div>
+            ))}
         </div>
     );
 
