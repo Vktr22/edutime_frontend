@@ -9,6 +9,9 @@ export default function MyAppointmentsStudPage() {
     //adatfogadas elokeszitese
     const [appointments, setAppointments] = useState([]);
     const [error, setError] = useState("");
+    // Jövőbeli és múltbeli időpontok csoportosítva nap szerint
+    const [futureGrouped, setFutureGrouped] = useState({});
+    const [pastGrouped, setPastGrouped] = useState({});
 
     
     // Diák időpontjának törlése és lista frissítése
@@ -40,7 +43,30 @@ export default function MyAppointmentsStudPage() {
         const token = localStorage.getItem("token");
 
         fetchStudentAppointments(token)
-            .then((data) => setAppointments(data))
+            .then((data) => {
+                setAppointments(data);
+                // Időpontok szétválasztása jövőbeli/múltbeli listára és napi bontásra
+                // 1) Aktuális idő
+                const now = new Date();
+
+                // 2) Jövőbeli és múltbeli időpontok különválasztása
+                const future = data.filter(a => new Date(a.lesson_time) > now);
+                const past = data.filter(a => new Date(a.lesson_time) <= now);
+
+                // 3) Csoportosítás dátum szerint
+                function groupByDate(appts) {
+                return appts.reduce((acc, appt) => {
+                    const date = appt.lesson_time.split(" ")[0]; // YYYY-MM-DD
+                    if (!acc[date]) acc[date] = [];
+                    acc[date].push(appt);
+                    return acc;
+                }, {});
+                }
+
+                // 4) Elmentjük a state-be
+                setFutureGrouped(groupByDate(future));
+                setPastGrouped(groupByDate(past));
+            })
             .catch((err) => {
             console.error("Error fetching appointments:", err);
             setError("Nem sikerült betölteni az időpontokat.");
