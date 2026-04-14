@@ -59,3 +59,38 @@
   font-size: 13px;
   color: #666;
 }
+.time-slot {
+  background-color: #f6f6f6;
+  border: 1px solid #c50337;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.time-slot button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #c50337;
+  font-weight: bold;
+}
+
+.add-slot-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px;
+  background-color: #c50337;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-slot-btn:hover {
+  opacity: 0.9;
+}
