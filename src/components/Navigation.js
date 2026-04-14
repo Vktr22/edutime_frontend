@@ -1,10 +1,11 @@
 // src/components/Navigation.jsx
 import React from "react";
+import "../css/Navigation.css";
 import { NavLink, useNavigate } from "react-router-dom";
 //useauth => innen kapjik a user bejelentkezett felhaszn objektumot,
         // + a logout()-ot  amiket elobb megirtam
+import { Home, Users, Calendar, Clock, LogOut } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";  
-import "../css/navigation.css";
 
 export default function Navigation() {
     //user ->a bejelentkezett user lekerese(mindig a baclend altal validalt felh)
@@ -12,84 +13,53 @@ export default function Navigation() {
   const { user, logout } = useAuth();
   //logout utan atiranyit
   const navigate = useNavigate();
-    /*
-    Mi történik?
-
-    logout() → backend: POST /logout
-    frontenden: setUser(null); → AuthContext törli a usert
-    navigate("/login") → visszavisz a login oldalra
-
-    Ez a SPA logout legegyszerűbb és legtisztább módja.
-  */
+  
+  if(!user) returnnull;
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
-//************************************************************
-//menuelemek role-ok zerint:
-  const studentNav = [
-    { path: "/home", label: "Kezdőlap" },
-    { path: "/teachers", label: "Tanárok" },
-    { path: "/my-appointments", label: "Időpontjaim" },
+  //************************************************************
+  //menuelemek role-ok zerint:
+  const studentLinks = [
+    { to: "/home", label: "Kezdőlap", icon: Home },
+    { to: "/teachers", label: "Tanárok", icon: Users },
+    { to: "/my-appointments", label: "Időpontjaim", icon: Calendar },
+  ];
+  const teacherLinks = [
+    { to: "/home", label: "Kezdőlap", icon: Home },
+    { to: "/teacher/appointments", label: "Foglalások", icon: Calendar },
+    { to: "/teacher/availability", label: "Elérhetőségek", icon: Clock },
   ];
 
-  const teacherNav = [
-    { path: "/home", label: "Kezdőlap" },
-    { path: "/teacher/appointments", label: "Foglalások" },
-    { path: "/teacher/availability", label: "Elérhetőségek" },
-  ];
+  const links = user.role === "teacher" ? teacherLinks : studentLinks;
 
-  const guestNav = [{ path: "/home", label: "Kezdőlap" }];
-//**************************************************************
-
-//role alapjan kivalasztaas
-// TERNARY OPERATOR lanc
-/*ha a user role student->studentnav
-  ha teacher->teachernav
-  egyebkent meg->guestnav
-  */
-  const roleNav =
-    user?.role === "student"
-      ? studentNav
-      : user?.role === "teacher"
-      ? teacherNav
-      : guestNav;
-//******************************************
-
-  /*
-    roleNav = tomb  -itt most student/teacher/guest nav
-    map ugye vegig iteral es minden elemhez general egy li-t minden nav elemnek
-  */
   return (
-    <header>
-      <nav className="sidenav">
-        <ul>
-          <li><strong>EduTime</strong></li>
-        </ul>
+    <nav className="navbar">
+      <div className="navbar-inner">
+        <div className="navbar-logo">EduTime</div>
 
-        <ul>
-          {roleNav.map((item) => (
-            <li key={item.path}>
-              <NavLink to={item.path}>{item.label}</NavLink>
-            </li>
+        <div className="navbar-menu">
+          {links.map(({ to, label, icon: Icon }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                "navbar-link" + (isActive ? " active" : "")
+              }
+            >
+              <Icon size={18} />
+              {label}
+            </NavLink>
           ))}
-        </ul>
 
-        <ul>
-          {user ? (
-            <li>
-              <span>{user.name}</span>
-              <button className="account-btn" onClick={handleLogout}>
-                Kijelentkezés
-              </button>
-            </li>
-          ) : (
-            <li>
-              <NavLink to="/login">Bejelentkezés</NavLink>
-            </li>
-          )}
-        </ul>
-      </nav>
-    </header>
+          <button className="navbar-logout" onClick={handleLogout}>
+            <LogOut size={18} />
+            Kilépés
+          </button>
+        </div>
+      </div>
+    </nav>
   );
+
 }
