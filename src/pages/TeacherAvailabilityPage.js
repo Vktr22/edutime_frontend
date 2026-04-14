@@ -8,14 +8,23 @@ import {
 } from "../services/availability";
 
 export default function TeacherAvailabilityPage() {
-  //allapotok elokeszitese, h legyen hova tolteni az adatot
+  //allapotok elokeszitese, h legyen hova tolteni az adatot --vagyis statek
   const [weekStart, setWeekStart] = useState(getStartOfWeek(new Date()));
-  // ideiglenes, mock időpontok UI-hoz
-  const [availability, setAvailability] = useState({
-    0: ["09:00–11:00"],
-    2: ["14:00–16:00"],
-  });
+  const [availability, setAvailability] = useState([]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    fetchAvailability(token)
+      .then((data) => {
+        setAvailability(data);
+      })
+      .catch((err) => {
+        console.error("Availability fetch error:", err);
+      });
+  }, []);
+
+  //helper fuggvenyek
   function getStartOfWeek(date) {
     const d = new Date(date);
     const day = d.getDay();
@@ -46,14 +55,35 @@ export default function TeacherAvailabilityPage() {
       return updated;
     });
   }
+
+  function handleDelete(id) {
+    const token = localStorage.getItem("token");
+
+    deleteAvailability(token, id)
+      .then(() => {
+        setAvailability((prev) => prev.filter((a) => a.id !== id));
+      })
+      .catch(() => {
+        alert("Nem sikerült törölni az idősávot.");
+      });
+  }
+
   function addSlot(dayIndex) {
-    const newSlot = "10:00–11:00"; // ideiglenes
-    setAvailability((prev) => {
-      const updated = { ...prev };
-      const existing = updated[dayIndex] || [];
-      updated[dayIndex] = [...existing, newSlot];
-      return updated;
-    });
+    const token = localStorage.getItem("token");
+
+    const payload = {
+      weekday: dayIndex,
+      start_time: "10:00",
+      end_time: "11:00",
+    };
+
+    createAvailability(token, payload)
+      .then((newSlot) => {
+        setAvailability((prev) => [...prev, newSlot]);
+      })
+      .catch(() => {
+        alert("Nem sikerült menteni az idősávot.");
+      });
   }
 
   const days = getDaysOfWeek();
@@ -106,14 +136,16 @@ export default function TeacherAvailabilityPage() {
                 </div>
               </div>
 
-              {availability[index]?.map((slot, slotIndex) => (
-                <div key={slotIndex} className="time-slot">
-                  <span>{slot}</span>
-                  <button onClick={() => removeSlot(index, slotIndex)}>
-                    ×
-                  </button>
-                </div>
-              ))}
+              {availability
+                .filter((slot) => slot.weekday === index)
+                .map((slot) => (
+                  <div key={slot.id} className="time-slot">
+                    <span>
+                      {slot.start_time}–{slot.end_time}
+                    </span>
+                    <button onClick={() => handleDelete(slot.id)}>×</button>
+                  </div>
+                ))}
 
               <button className="add-slot-btn" onClick={() => addSlot(index)}>
                 + Hozzáadás
