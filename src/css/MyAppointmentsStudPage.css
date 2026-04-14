@@ -1,0 +1,57 @@
+/* --- Konténerek --- */
+.my-appointments-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* --- Dátum blokk (napok) --- */
+.date-block {
+  margin-bottom: 30px;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.date-block h4 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* --- Kártyák --- */
+.appointment-card {
+  background: #f8f8f8;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+/* --- Múltbeli kártya --- */
+.appointment-card.disabled {
+  opacity: 0.6;
+  background: #f2f2f2;
+}
+
+/* --- Törlés gomb --- */
+.appointment-card button {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  margin-top: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.appointment-card button:hover {
+  background: #c9302c;
+}
+
+/* --- Szekció címek --- */
+.section-title {
+  font-size: 1.4rem;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}

@@ -2,6 +2,7 @@ import { useAuth } from "../contexts/AuthContext";
 import React, { useEffect, useState } from "react";
 import { fetchStudentAppointments } from "../services/appointments";
 import { cancelStudentAppointment } from "../services/appointments";
+import "../css/MyAppointmentsStudPage.css";
 
 export default function MyAppointmentsStudPage() {
 
@@ -82,13 +83,13 @@ export default function MyAppointmentsStudPage() {
 
         
     return (
-        <div>
+        <div className="my-appointments-container">
             <h2>Saját időpontjaim</h2>
 
-            <h3>Következő időpontok</h3>
+            <h3 className="section-title">Következő időpontok</h3>
 
             {Object.keys(futureGrouped).length === 0 && (
-            <p>Nincs jövőbeli foglalt időpont.</p>
+            <p>Nincs foglalt időpont.</p>
             )}
 
             {Object.keys(futureGrouped).map(date => (
@@ -120,7 +121,7 @@ export default function MyAppointmentsStudPage() {
                 ))}
             </div>
             ))}
-            <h3>Korábbi időpontok</h3>
+            <h3 className="section-title">Korábbi időpontok</h3>
 
             {Object.keys(pastGrouped).length === 0 && (
             <p>Nincs korábbi időpont.</p>
