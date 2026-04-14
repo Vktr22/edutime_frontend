@@ -14,7 +14,7 @@ export default function Navigation() {
   //logout utan atiranyit
   const navigate = useNavigate();
   
-  if(!user) returnnull;
+  if(!user) return null;
   const handleLogout = async () => {
     await logout();
     navigate("/login");
