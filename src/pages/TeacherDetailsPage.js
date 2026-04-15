@@ -19,12 +19,12 @@ export default function TeacherDetailsPage() {
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [slotError, setSlotError] = useState("");
-  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedSlots, setSelectedSlots] = useState([]);
   const [weekStart, setWeekStart] = useState(getStartOfWeek(new Date()));
 
   const handleBooking = async () => {
-    if (!selectedSlot) {
-      alert("Kérlek válassz egy időpontot!");
+    if (selectedSlots.length === 0) {
+      alert("Kérlek válassz ki legalább egy időpontot!");
       return;
     }
 
@@ -35,25 +35,24 @@ export default function TeacherDetailsPage() {
         return;
       }
 
-      // 1️⃣ tényleges foglalás
-      await bookAppointment(token, id, selectedSlot);
+      // ✅ MINDEN kiválasztott slot lefoglalása
+      for (const slot of selectedSlots) {
+        await bookAppointment(token, id, slot.raw);
+      }
 
-      // 2️⃣ sikeres visszajelzés
-      alert("Időpont sikeresen lefoglalva!");
+      alert("Időpont(ok) sikeresen lefoglalva!");
 
-      // 3️⃣ frissítjük az elérhető slotokat
+      // ✅ Frissítjük a foglalható slotokat
       const refreshedSlots = await fetchAvailableSlots(token, id);
       setAvailableSlots(refreshedSlots);
 
-      // 4️⃣ reset kijelölés
-      setSelectedSlot(null);
+      // ✅ Reset kijelölések
+      setSelectedSlots([]);
     } catch (err) {
       console.error("Booking error:", err);
-
       const msg =
         err.response?.data?.message ||
         "Hiba történt a foglalás során. Próbáld újra.";
-
       alert(msg);
     }
   };
@@ -138,7 +137,9 @@ export default function TeacherDetailsPage() {
       <div className="week-nav">
         <button
           onClick={() =>
-            setWeekStart(new Date(weekStart.setDate(weekStart.getDate() - 7)))
+            setWeekStart(
+              (prev) => new Date(new Date(prev).setDate(prev.getDate() - 7)),
+            )
           }
         >
           ←
@@ -150,8 +151,10 @@ export default function TeacherDetailsPage() {
         </span>
 
         <button
-          onClick={() =>
-            setWeekStart(new Date(weekStart.setDate(weekStart.getDate() + 7)))
+          onClick={() =>            
+            setWeekStart(prev =>
+                new Date(new Date(prev).setDate(prev.getDate() - 7))
+            )
           }
         >
           →
@@ -188,9 +191,32 @@ export default function TeacherDetailsPage() {
                     <div
                       key={slot.start}
                       className={`slot-button ${
-                        selectedSlot === slot.start ? "selected" : ""
+                        selectedSlots.some((s) => s.raw === slot.start)
+                          ? "selected"
+                          : ""
                       }`}
-                      onClick={() => setSelectedSlot(slot.start)}
+                      onClick={() => {
+                        setSelectedSlots((prev) => {
+                          const exists = prev.some(
+                            (s) => s.start === slot.start,
+                          );
+
+                          if (exists) {
+                            // törlés
+                            return prev.filter((s) => s.start !== slot.start);
+                          }
+
+                          // hozzáadás
+                          return [
+                            ...prev,
+                            {
+                              date: new Date(slot.start),
+                              start: slot.start.slice(11, 16),
+                              raw: slot.start, // ezt küldjük backendnek
+                            },
+                          ];
+                        });
+                      }}
                     >
                       {start}
                     </div>
@@ -199,13 +225,33 @@ export default function TeacherDetailsPage() {
             </div>
           ))}
         </div>
-
-        {selectedSlot && (
-          <div style={{ marginTop: "16px" }}>
-            <button onClick={handleBooking}>Időpont lefoglalása</button>
-          </div>
-        )}
       </div>
+
+      {selectedSlots.length > 0 && (
+        <div className="selected-slot-summary">
+          <p>
+            <strong>Kiválasztott időpontok:</strong>
+          </p>
+          <ul>
+            {selectedSlots.map((slot) => (
+              <li key={slot.raw}>
+                {slot.date.toLocaleDateString("hu-HU", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}{" "}
+                – {slot.start}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {selectedSlots.length > 0 && (
+        <div style={{ marginTop: "16px" }}>
+          <button onClick={handleBooking}>Időpont(ok) lefoglalása</button>
+        </div>
+      )}
     </div>
   );
 }
