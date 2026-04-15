@@ -20,6 +20,7 @@ export default function TeacherDetailsPage() {
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [slotError, setSlotError] = useState("");
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [weekStart, setWeekStart] = useState(getStartOfWeek(new Date()));
 
   const handleBooking = async () => {
     if (!selectedSlot) {
@@ -86,6 +87,25 @@ export default function TeacherDetailsPage() {
       });
   }, [user, id]);
 
+  //helper fuggvenyek
+  function getStartOfWeek(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff));
+  }
+
+  function getDaysOfWeek() {
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(weekStart);
+      date.setDate(weekStart.getDate() + i);
+      days.push(date);
+    }
+    return days;
+  }
+  const days = getDaysOfWeek();
+
   //korai kilepesi feltetelek = guard clause-ok
   if (loading) {
     return <p>Felhasználó betöltése...</p>;
@@ -115,6 +135,28 @@ export default function TeacherDetailsPage() {
       </div>
 
       <h3>Foglalható időpontok</h3>
+      <div className="week-nav">
+        <button
+          onClick={() =>
+            setWeekStart(new Date(weekStart.setDate(weekStart.getDate() - 7)))
+          }
+        >
+          ←
+        </button>
+
+        <span>
+          {days[0].toLocaleDateString("hu-HU")} –{" "}
+          {days[6].toLocaleDateString("hu-HU")}
+        </span>
+
+        <button
+          onClick={() =>
+            setWeekStart(new Date(weekStart.setDate(weekStart.getDate() + 7)))
+          }
+        >
+          →
+        </button>
+      </div>
 
       {loadingSlots && <p>Időpontok betöltése...</p>}
       {slotError && <p>{slotError}</p>}
@@ -124,22 +166,39 @@ export default function TeacherDetailsPage() {
       )}
 
       <div className="slots-container">
-        {availableSlots.map((slot) => {
-          //SLOTOK MEGJELENÍTÉSE csak kijelol(nem foglal), nincs backendhivas egyenlore
-          const start = slot.start.slice(11, 16);
+        <div className="week-grid">
+          {days.map((day, index) => (
+            <div key={index} className="day-column">
+              <div className="day-header">
+                <strong>
+                  {day.toLocaleDateString("hu-HU", { weekday: "long" })}
+                </strong>
+                <div>{day.toLocaleDateString("hu-HU")}</div>
+              </div>
 
-          return (
-            <div
-              key={slot.start}
-              className={`slot-button ${
-                selectedSlot === slot.start ? "selected" : ""
-              }`}
-              onClick={() => setSelectedSlot(slot.start)}
-            >
-              {start}
+              {availableSlots
+                .filter(
+                  (slot) =>
+                    new Date(slot.start).toDateString() === day.toDateString(),
+                )
+                .map((slot) => {
+                  const start = slot.start.slice(11, 16);
+
+                  return (
+                    <div
+                      key={slot.start}
+                      className={`slot-button ${
+                        selectedSlot === slot.start ? "selected" : ""
+                      }`}
+                      onClick={() => setSelectedSlot(slot.start)}
+                    >
+                      {start}
+                    </div>
+                  );
+                })}
             </div>
-          );
-        })}
+          ))}
+        </div>
 
         {selectedSlot && (
           <div style={{ marginTop: "16px" }}>
