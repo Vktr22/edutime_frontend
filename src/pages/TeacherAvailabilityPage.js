@@ -65,6 +65,35 @@ export default function TeacherAvailabilityPage() {
         alert("Nem sikerült törölni az idősávot.");
       });
   }
+  function isPastDay(date) {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return d < today;
+  }
+
+  /*
+    Mit csinál pontosan?
+    csak azon a napon nézi az idősávokat (weekday)
+    minden meglévő sávval összeveti az újat
+    ha bármelyikkel átfed → true
+  */
+  function hasOverlap(dayIndex, newStart, newEnd) {
+    return availability
+        .filter((slot) => slot.weekday === dayIndex)
+        .some((slot) => {
+        const existingStart = slot.start_time.slice(0, 5);
+        const existingEnd = slot.end_time.slice(0, 5);
+
+        return (
+            newStart < existingEnd &&
+            newEnd > existingStart
+        );
+        });
+  }
 
   // Ellenőrzi az időpontokat, majd a kiválasztott naphoz tartozó elérhetőséget elmenti.
   function saveSlot(dayIndex) {
@@ -76,6 +105,11 @@ export default function TeacherAvailabilityPage() {
     if (newSlot.start >= newSlot.end) {
       alert("A kezdés nem lehet későbbi vagy egyenlő a végénél!");
       return;
+    }
+    //!!!Ez a lépés állítja meg a mentést, mielőtt backendhez mennénk.
+    if (hasOverlap(dayIndex, newSlot.start, newSlot.end)) {
+        alert("Az új idősáv átfed egy meglévő elérhetőséggel.");
+        return;
     }
 
     const token = localStorage.getItem("token");
@@ -116,15 +150,7 @@ export default function TeacherAvailabilityPage() {
 
   const days = getDaysOfWeek();
 
-  function isPastDay(date) {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    return d < today;
-  }
+  
 
   /*
     if (loading) return <p>Betöltés...</p>;
