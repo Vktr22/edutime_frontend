@@ -11,6 +11,12 @@ export default function TeacherAvailabilityPage() {
   //allapotok elokeszitese, h legyen hova tolteni az adatot --vagyis statek
   const [weekStart, setWeekStart] = useState(getStartOfWeek(new Date()));
   const [availability, setAvailability] = useState([]);
+  const [addingDay, setAddingDay] = useState(null); //melyik napra nyitott a szerkesztő (pl. 0 = hétfő)
+  const [newSlot, setNewSlot] = useState({
+    //ideiglenesen kiválasztott időpontok
+    start: "",
+    end: "",
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -48,14 +54,6 @@ export default function TeacherAvailabilityPage() {
     return days;
   }
 
-  function removeSlot(dayIndex, slotIndex) {
-    setAvailability((prev) => {
-      const updated = { ...prev };
-      updated[dayIndex] = updated[dayIndex].filter((_, i) => i !== slotIndex);
-      return updated;
-    });
-  }
-
   function handleDelete(id) {
     const token = localStorage.getItem("token");
 
@@ -68,23 +66,47 @@ export default function TeacherAvailabilityPage() {
       });
   }
 
-  function addSlot(dayIndex) {
+  // Ellenőrzi az időpontokat, majd a kiválasztott naphoz tartozó elérhetőséget elmenti.
+  function saveSlot(dayIndex) {
+    if (!newSlot.start || !newSlot.end) {
+      alert("Kérlek válaszd ki a kezdő és záró időpontot!");
+      return;
+    }
+
+    if (newSlot.start >= newSlot.end) {
+      alert("A kezdés nem lehet későbbi vagy egyenlő a végénél!");
+      return;
+    }
+
     const token = localStorage.getItem("token");
 
     const payload = {
       weekday: dayIndex,
-      start_time: "10:00",
-      end_time: "11:00",
+      start_time: newSlot.start,
+      end_time: newSlot.end,
     };
 
     createAvailability(token, payload)
-      .then((newSlot) => {
-        setAvailability((prev) => [...prev, newSlot]);
+      .then((created) => {
+        setAvailability((prev) => [...prev, created]);
+        setAddingDay(null);
+        setNewSlot({ start: "", end: "" });
       })
       .catch(() => {
         alert("Nem sikerült menteni az idősávot.");
       });
   }
+
+  function generateTimeOptions() {
+    const times = [];
+    for (let h = 0; h < 24; h++) {
+      const hour = String(h).padStart(2, "0");
+      times.push(`${hour}:00`);
+      times.push(`${hour}:30`);
+    }
+    return times;
+  }
+  const timeOptions = generateTimeOptions();
 
   const days = getDaysOfWeek();
 
@@ -147,9 +169,54 @@ export default function TeacherAvailabilityPage() {
                   </div>
                 ))}
 
-              <button className="add-slot-btn" onClick={() => addSlot(index)}>
-                + Hozzáadás
-              </button>
+              {addingDay === index ? (  //*1*Az első blokk egy feltételes megjelenítés. Azt nézi, hogy az adott napnál éppen nyitva van-e az új idősáv felvitele, vagyis az addingDay === index teljesül-e. Ha igen, akkor a szerkesztő felület jelenik meg, ha nem, akkor csak a + Hozzáadás gomb.
+                <div>
+                    <select
+                    value={newSlot.start}
+                    onChange={(e) =>
+                        setNewSlot((prev) => ({ ...prev, start: e.target.value }))
+                    }
+                    >
+                    <option value="">Mettől</option>
+                    {timeOptions.map((t) => (
+                        <option key={t} value={t}>
+                        {t}
+                        </option>
+                    ))}
+                    </select>
+
+                    <select
+                    value={newSlot.end}
+                    onChange={(e) =>
+                        setNewSlot((prev) => ({ ...prev, end: e.target.value }))
+                    }
+                    >
+                    <option value="">Meddig</option>
+                    {timeOptions.map((t) => (
+                        <option key={t} value={t}>
+                        {t}
+                        </option>
+                    ))}
+                    </select>
+
+                    <button onClick={() => saveSlot(index)}>Mentés</button>
+                    <button
+                    onClick={() => {
+                        setAddingDay(null);
+                        setNewSlot({ start: "", end: "" });
+                    }}
+                    >
+                    Mégse
+                    </button>
+                </div>
+                ) : (
+                <button
+                    className="add-slot-btn"
+                    onClick={() => setAddingDay(index)}
+                >
+                    + Hozzáadás {/* *1* */}
+                </button>
+              )}
             </div>
           ),
         )}
