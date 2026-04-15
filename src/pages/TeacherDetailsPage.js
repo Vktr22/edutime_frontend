@@ -21,31 +21,34 @@ export default function TeacherDetailsPage() {
   const [slotError, setSlotError] = useState("");
   const [selectedSlot, setSelectedSlot] = useState(null);
 
-  const handleBooking = async (slotStart) => {
+  const handleBooking = async () => {
+    if (!selectedSlot) {
+      alert("Kérlek válassz egy időpontot!");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
-
       if (!token) {
         alert("Nincs bejelentkezés. Kérlek jelentkezz be újra.");
         return;
       }
 
-      // 2) Foglalás elküldése a backendnek
-      //    (a slotStart a backend által generált, biztosan foglalható időpont)
-      await bookAppointment(token, id, slotStart);
+      // 1️⃣ tényleges foglalás
+      await bookAppointment(token, id, selectedSlot);
 
-      // 3) Sikeres foglalás visszajelzés
+      // 2️⃣ sikeres visszajelzés
       alert("Időpont sikeresen lefoglalva!");
 
-      // 4) A foglalható időpontok újratöltése,
-      //    hogy a frissen lefoglalt slot eltűnjön a listából
+      // 3️⃣ frissítjük az elérhető slotokat
       const refreshedSlots = await fetchAvailableSlots(token, id);
       setAvailableSlots(refreshedSlots);
+
+      // 4️⃣ reset kijelölés
+      setSelectedSlot(null);
     } catch (err) {
       console.error("Booking error:", err);
-      alert("Nem sikerült lefoglalni az időpontot.");
 
-      // 5) Backend hibaüzenet kezelése (pl. 409, 422)
       const msg =
         err.response?.data?.message ||
         "Hiba történt a foglalás során. Próbáld újra.";
@@ -121,7 +124,8 @@ export default function TeacherDetailsPage() {
       )}
 
       <div className="slots-container">
-        {availableSlots.map((slot) => {     //SLOTOK MEGJELENÍTÉSE csak kijelol(nem foglal), nincs backendhivas egyenlore
+        {availableSlots.map((slot) => {
+          //SLOTOK MEGJELENÍTÉSE csak kijelol(nem foglal), nincs backendhivas egyenlore
           const start = slot.start.slice(11, 16);
 
           return (
@@ -136,6 +140,12 @@ export default function TeacherDetailsPage() {
             </div>
           );
         })}
+
+        {selectedSlot && (
+          <div style={{ marginTop: "16px" }}>
+            <button onClick={handleBooking}>Időpont lefoglalása</button>
+          </div>
+        )}
       </div>
     </div>
   );
