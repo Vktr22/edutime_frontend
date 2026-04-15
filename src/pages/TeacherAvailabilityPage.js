@@ -97,18 +97,34 @@ export default function TeacherAvailabilityPage() {
       });
   }
 
-  function generateTimeOptions() {
+  function generateTimeOptions(day) {
     const times = [];
+    const now = new Date();
+
     for (let h = 0; h < 24; h++) {
+      // mai nap esetén múlt órák tiltása
+      if (day.toDateString() === now.toDateString() && h <= now.getHours()) {
+        continue;
+      }
+
       const hour = String(h).padStart(2, "0");
       times.push(`${hour}:00`);
-      times.push(`${hour}:30`);
     }
+
     return times;
   }
-  const timeOptions = generateTimeOptions();
 
   const days = getDaysOfWeek();
+
+  function isPastDay(date) {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return d < today;
+  }
 
   /*
     if (loading) return <p>Betöltés...</p>;
@@ -163,59 +179,66 @@ export default function TeacherAvailabilityPage() {
                 .map((slot) => (
                   <div key={slot.id} className="time-slot">
                     <span>
-                      {slot.start_time}–{slot.end_time}
+                      {slot.start_time.slice(0, 5)}–{slot.end_time.slice(0, 5)}
                     </span>
-                    <button onClick={() => handleDelete(slot.id)}>×</button>
+                    {!isPastDay(day) && (
+                      <button onClick={() => handleDelete(slot.id)}>×</button>
+                    )}
                   </div>
                 ))}
 
-              {addingDay === index ? (  //*1*Az első blokk egy feltételes megjelenítés. Azt nézi, hogy az adott napnál éppen nyitva van-e az új idősáv felvitele, vagyis az addingDay === index teljesül-e. Ha igen, akkor a szerkesztő felület jelenik meg, ha nem, akkor csak a + Hozzáadás gomb.
+              {addingDay === index ? ( //*1*Az első blokk egy feltételes megjelenítés. Azt nézi, hogy az adott napnál éppen nyitva van-e az új idősáv felvitele, vagyis az addingDay === index teljesül-e. Ha igen, akkor a szerkesztő felület jelenik meg, ha nem, akkor csak a + Hozzáadás gomb.
                 <div>
-                    <select
+                  <select
                     value={newSlot.start}
                     onChange={(e) =>
-                        setNewSlot((prev) => ({ ...prev, start: e.target.value }))
+                      setNewSlot((prev) => ({ ...prev, start: e.target.value }))
                     }
-                    >
+                  >
                     <option value="">Mettől</option>
-                    {timeOptions.map((t) => (
-                        <option key={t} value={t}>
+                    {generateTimeOptions(day).map((t) => (
+                      <option key={t} value={t}>
                         {t}
-                        </option>
+                      </option>
                     ))}
-                    </select>
+                  </select>
 
-                    <select
+                  <select
                     value={newSlot.end}
                     onChange={(e) =>
-                        setNewSlot((prev) => ({ ...prev, end: e.target.value }))
+                      setNewSlot((prev) => ({ ...prev, end: e.target.value }))
                     }
-                    >
+                  >
                     <option value="">Meddig</option>
-                    {timeOptions.map((t) => (
-                        <option key={t} value={t}>
+                    {generateTimeOptions(day).map((t) => (
+                      <option key={t} value={t}>
                         {t}
-                        </option>
+                      </option>
                     ))}
-                    </select>
+                  </select>
 
-                    <button onClick={() => saveSlot(index)}>Mentés</button>
-                    <button
+                  <button onClick={() => saveSlot(index)}>Mentés</button>
+                  <button
                     onClick={() => {
-                        setAddingDay(null);
-                        setNewSlot({ start: "", end: "" });
+                      setAddingDay(null);
+                      setNewSlot({ start: "", end: "" });
                     }}
-                    >
+                  >
                     Mégse
-                    </button>
+                  </button>
                 </div>
-                ) : (
-                <button
+              ) : (
+                !isPastDay(day) && (
+                  <button
                     className="add-slot-btn"
-                    onClick={() => setAddingDay(index)}
-                >
-                    + Hozzáadás {/* *1* */}
-                </button>
+                    onClick={() => {
+                      setAddingDay(index);
+                      setNewSlot({ start: "", end: "" });
+                    }}
+                  >
+                    + Hozzáadás
+                  </button>
+                )
               )}
             </div>
           ),
