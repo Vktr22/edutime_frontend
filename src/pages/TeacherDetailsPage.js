@@ -22,6 +22,7 @@ export default function TeacherDetailsPage() {
   const [slotError, setSlotError] = useState("");
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [weekStart, setWeekStart] = useState(getStartOfWeek(new Date()));
+  const [bookingSuccess, setBookingSuccess] = useState(false);
 
   const handleBooking = async () => {
     if (selectedSlots.length === 0) {
@@ -41,7 +42,7 @@ export default function TeacherDetailsPage() {
         await bookAppointment(token, id, slot.raw);
       }
 
-      alert("Időpont(ok) sikeresen lefoglalva!");
+      setBookingSuccess(true);
 
       // ✅ Frissítjük a foglalható slotokat
       const refreshedSlots = await fetchAvailableSlots(token, id);
@@ -256,6 +257,27 @@ export default function TeacherDetailsPage() {
       {selectedSlots.length > 0 && (
         <div className="booking-action">
           <button onClick={handleBooking}>Időpont(ok) lefoglalása</button>
+        </div>
+      )}
+      {bookingSuccess && (
+        <div className="booking-success">
+          <p>
+            <strong>Sikeres foglalás!</strong>
+          </p>
+          <p>Az időpont(ok) sikeresen lefoglalásra kerültek.</p>
+
+          <div style={{ marginTop: "12px" }}>
+            <button onClick={() => navigate("/my-appointments")}>
+              Időpontjaim megtekintése
+            </button>
+
+            <button
+              style={{ marginLeft: "10px" }}
+              onClick={() => navigate("/teachers")}
+            >
+              Vissza a tanárokhoz
+            </button>
+          </div>
         </div>
       )}
     </div>

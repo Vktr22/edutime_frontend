@@ -143,3 +143,11 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.booking-success {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #c50337;
+  border-radius: 10px;
+  background-color: #f9f0f2;
+}
