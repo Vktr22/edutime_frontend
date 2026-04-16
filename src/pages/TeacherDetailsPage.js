@@ -106,6 +106,12 @@ export default function TeacherDetailsPage() {
   }
   const days = getDaysOfWeek();
 
+  const prevWeekEnd = new Date(weekStart);
+  prevWeekEnd.setDate(prevWeekEnd.getDate() - 1); // előző hét vasárnapja
+  prevWeekEnd.setHours(23, 59, 59, 999);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   //korai kilepesi feltetelek = guard clause-ok
   if (loading) {
     return <p>Felhasználó betöltése...</p>;
@@ -137,10 +143,13 @@ export default function TeacherDetailsPage() {
       <h3>Foglalható időpontok</h3>
       <div className="week-nav">
         <button
+          disabled={prevWeekEnd < today}
           onClick={() =>
-            setWeekStart(
-              (prev) => new Date(new Date(prev).setDate(prev.getDate() - 7)),
-            )
+            setWeekStart((prev) => {
+              const next = new Date(prev);
+              next.setDate(next.getDate() - 7);
+              return next;
+            })
           }
         >
           ←
@@ -152,9 +161,9 @@ export default function TeacherDetailsPage() {
         </span>
 
         <button
-          onClick={() =>            
-            setWeekStart(prev =>
-                new Date(new Date(prev).setDate(prev.getDate() - 7))
+          onClick={() =>
+            setWeekStart(
+              (prev) => new Date(new Date(prev).setDate(prev.getDate() + 7)),
             )
           }
         >
@@ -188,32 +197,28 @@ export default function TeacherDetailsPage() {
                 .map((slot) => {
                   const start = slot.start.slice(11, 16);
 
+                  const isSelected = selectedSlots.some(
+                    (s) => s.raw === slot.start,
+                  );
+
                   return (
                     <div
                       key={slot.start}
-                      className={`slot-button ${
-                        selectedSlots.some((s) => s.raw === slot.start)
-                          ? "selected"
-                          : ""
-                      }`}
+                      className={`slot-button ${isSelected ? "selected" : ""}`}
                       onClick={() => {
                         setSelectedSlots((prev) => {
-                          const exists = prev.some(
-                            (s) => s.raw === slot.start,
-                          );
-
-                          if (exists) {
-                            // törlés
+                          if (isSelected) {
+                            // kijelölés törlése
                             return prev.filter((s) => s.raw !== slot.start);
                           }
 
-                          // hozzáadás
+                          // új kijelölés
                           return [
                             ...prev,
                             {
                               date: new Date(slot.start),
-                              start: slot.start.slice(11, 16),
-                              raw: slot.start, // ezt küldjük backendnek
+                              start,
+                              raw: slot.start,
                             },
                           ];
                         });
