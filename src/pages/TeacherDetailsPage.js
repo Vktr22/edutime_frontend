@@ -267,7 +267,7 @@ export default function TeacherDetailsPage() {
           <p>Az időpont(ok) sikeresen lefoglalásra kerültek.</p>
 
           <div style={{ marginTop: "12px" }}>
-            <button onClick={() => navigate("/my-appointments")}>
+            <button onClick={() => navigate("/my-appointments", { state: { fromBooking: true } })}>
               Időpontjaim megtekintése
             </button>
 
