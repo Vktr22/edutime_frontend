@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { fetchTeacherById } from "../services/teachers";
 import { bookAppointment } from "../services/appointments";
 import { fetchAvailableSlots } from "../services/availability";
+import "../css/TeacherDetailsPage.css";
 
 export default function TeacherDetailsPage() {
   /*
@@ -198,12 +199,12 @@ export default function TeacherDetailsPage() {
                       onClick={() => {
                         setSelectedSlots((prev) => {
                           const exists = prev.some(
-                            (s) => s.start === slot.start,
+                            (s) => s.raw === slot.start,
                           );
 
                           if (exists) {
                             // törlés
-                            return prev.filter((s) => s.start !== slot.start);
+                            return prev.filter((s) => s.raw !== slot.start);
                           }
 
                           // hozzáadás
@@ -248,7 +249,7 @@ export default function TeacherDetailsPage() {
         </div>
       )}
       {selectedSlots.length > 0 && (
-        <div style={{ marginTop: "16px" }}>
+        <div className="booking-action">
           <button onClick={handleBooking}>Időpont(ok) lefoglalása</button>
         </div>
       )}

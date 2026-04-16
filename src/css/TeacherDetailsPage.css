@@ -1,0 +1,109 @@
+/* ==== NAPTÁR KONTAINER ==== */
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.week-nav button {
+  background: #f3f3f3;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* ==== NAP OSZLOP ==== */
+
+.day-column {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  min-height: 200px;
+}
+
+.day-header {
+  text-align: center;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #ddd;
+}
+
+.day-header strong {
+  display: block;
+  text-transform: capitalize;
+}
+
+/* ==== IDŐSÁVOK ==== */
+
+.slot-button {
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #c50337;
+  color: #c50337;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.slot-button:hover {
+  background-color: #c50337;
+  color: #fff;
+}
+
+/* ==== KIJELÖLT ==== */
+
+.slot-button.selected {
+  background-color: #c50337;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* ==== KIJELÖLT ÖSSZEFOGLALÓ ==== */
+
+.selected-slot-summary {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.selected-slot-summary ul {
+  margin-top: 8px;
+  padding-left: 18px;
+}
+
+/* ==== FOGLALÁS GOMB ==== */
+
+.booking-action {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.booking-action button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background-color: #c50337;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.booking-action button:hover {
+  opacity: 0.9;
+}
