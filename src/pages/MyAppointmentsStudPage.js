@@ -27,9 +27,34 @@ export default function MyAppointmentsStudPage() {
       alert("Időpont törölve.");
 
       // lista frissítése
-      setAppointments((prev) =>
-        prev.filter((appt) => appt.id !== appointmentId),
-      );
+      setAppointments((prev) => {
+        const updated = prev.filter((appt) => appt.id !== appointmentId);
+
+        // újraszámoljuk a grouped állapotokat
+        const now = new Date();
+
+        const future = updated.filter(
+          (a) => new Date(a.lesson_time) > now && a.status === "active",
+        );
+
+        const past = updated.filter(
+          (a) => new Date(a.lesson_time) <= now && a.status === "active",
+        );
+
+        function groupByDate(appts) {
+          return appts.reduce((acc, appt) => {
+            const date = appt.lesson_time.split(" ")[0];
+            if (!acc[date]) acc[date] = [];
+            acc[date].push(appt);
+            return acc;
+          }, {});
+        }
+
+        setFutureGrouped(groupByDate(future));
+        setPastGrouped(groupByDate(past));
+
+        return updated;
+      });
     } catch (err) {
       alert(
         err.response?.data?.message || "Nem sikerült törölni az időpontot.",
@@ -51,8 +76,13 @@ export default function MyAppointmentsStudPage() {
         const now = new Date();
 
         // 2) Jövőbeli és múltbeli időpontok különválasztása
-        const future = data.filter((a) => new Date(a.lesson_time) > now);
-        const past = data.filter((a) => new Date(a.lesson_time) <= now);
+        const future = data.filter(
+          (a) => new Date(a.lesson_time) > now && a.status === "active",
+        );
+
+        const past = data.filter(
+          (a) => new Date(a.lesson_time) <= now && a.status === "active",
+        );
 
         // 3) Csoportosítás dátum szerint
         function groupByDate(appts) {
