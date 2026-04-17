@@ -1,0 +1,13 @@
+.notification-box {
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: 8px;
+  background-color: #fdecea;
+  border: 1px solid #e57373;
+}
+
+.notification-box a {
+  color: #b71c1c;
+  font-weight: 600;
+  text-decoration: none;
+}
