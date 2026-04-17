@@ -53,6 +53,22 @@ export default function HomePage() {
       <h2>Saját profil</h2>
       <p>Jó napot, {user.name}</p>
       <p>Jogosultság: {user.role}</p>
+
+      {/* DIÁK értesítés */}
+      {notification === "student_cancelled" && (
+        <div className="notification-box">
+          <Link to="/my-appointments">
+            Egy általad foglalt időpontot töröltek
+          </Link>
+        </div>
+      )}
+
+      {/* TANÁR értesítés */}
+      {notification === "teacher_cancelled" && (
+        <div className="notification-box">
+          <Link to="/teacher/appointments">Egy foglalt időpontot töröltek</Link>
+        </div>
+      )}
     </div>
   );
 }
