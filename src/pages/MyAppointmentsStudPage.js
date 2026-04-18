@@ -2,7 +2,7 @@ import { useAuth } from "../contexts/AuthContext";
 import React, { useEffect, useState } from "react";
 import { fetchStudentAppointments } from "../services/appointments";
 import { cancelStudentAppointment } from "../services/appointments";
-import "../css/MyAppointmentsStudPage.css";
+import "../css/AppointmentsPage.css";
 import { useLocation } from "react-router-dom";
 
 export default function MyAppointmentsStudPage() {
