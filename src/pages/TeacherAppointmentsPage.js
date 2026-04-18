@@ -54,8 +54,6 @@ export default function TeacherAppointmentsPage() {
   function processAppointments(data) {
     const now = new Date();
 
-    const cancelled = data.filter((a) => a.status === "cancelled_by_student");
-
     const future = data.filter(
       (a) => a.status === "active" && new Date(a.lesson_time) > now,
     );
@@ -63,6 +61,9 @@ export default function TeacherAppointmentsPage() {
     const past = data.filter(
       (a) => a.status === "active" && new Date(a.lesson_time) <= now,
     );
+
+    // csak EZ jelenhet meg töröltként tanárnál
+    const cancelled = data.filter((a) => a.status === "cancelled_by_student");
 
     setCancelledByStudent(cancelled);
     setFutureGrouped(groupByDate(future));
