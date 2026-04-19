@@ -86,6 +86,15 @@ export default function TeacherAvailabilityPage() {
     return d < today;
   }
 
+  //ez a böngésző helyi időzónája szerint állítja elő a dátumot.
+  function toLocalYYYYMMDD(date) {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   // Megnézi, hogy az új idősáv átfed-e valamelyik meglévővel ugyanazon a napon.
   function hasOverlap(dateStr, newStart, newEnd) {
     return availability
@@ -111,7 +120,7 @@ export default function TeacherAvailabilityPage() {
     }
 
     // A napot egységes YYYY-MM-DD formára alakítjuk.
-    const selectedDate = day.toISOString().slice(0, 10); // YYYY-MM-DD
+    const selectedDate = toLocalYYYYMMDD(day); // YYYY-MM-DD
 
     // Ha ütközés van, nem engedjük a mentést.
     if (hasOverlap(selectedDate, newSlot.start, newSlot.end)) {
@@ -211,7 +220,7 @@ export default function TeacherAvailabilityPage() {
 
               {/* Az adott naphoz tartozó elérhetőségek listája. */}
               {availability
-                .filter((slot) => slot.date === day.toISOString().slice(0, 10))
+                .filter((slot) => slot.date === toLocalYYYYMMDD(day))
                 .map((slot) => (
                   <div key={slot.id} className="time-slot">
                     <span>
