@@ -8,17 +8,23 @@ import {
 } from "../services/availability";
 
 export default function TeacherAvailabilityPage() {
-  //allapotok elokeszitese, h legyen hova tolteni az adatot --vagyis statek
+  // A jelenleg megjelenített hét kezdőnapja.
   const [weekStart, setWeekStart] = useState(getStartOfWeek(new Date()));
+
+  // A backendből betöltött elérhetőségi idősávok listája.
   const [availability, setAvailability] = useState([]);
-  const [addingDay, setAddingDay] = useState(null); //melyik napra nyitott a szerkesztő (pl. 0 = hétfő)
+
+  // Megmondja, melyik naphoz van éppen nyitva az új idősáv felvitelekor a szerkesztő.
+  const [addingDay, setAddingDay] = useState(null);
+
+  // Az ideiglenesen kiválasztott kezdő és záró időpont.
   const [newSlot, setNewSlot] = useState({
-    //ideiglenesen kiválasztott időpontok
     start: "",
     end: "",
   });
 
   useEffect(() => {
+    // Belépés után betöltjük a tanár korábban mentett elérhetőségeit.
     const token = localStorage.getItem("token");
 
     fetchAvailability(token)
@@ -30,7 +36,7 @@ export default function TeacherAvailabilityPage() {
       });
   }, []);
 
-  //helper fuggvenyek
+  // Segédfüggvény: megkeresi az adott hét hétfői napját.
   function getStartOfWeek(date) {
     const d = new Date(date);
     const day = d.getDay();
@@ -38,12 +44,14 @@ export default function TeacherAvailabilityPage() {
     return new Date(d.setDate(diff));
   }
 
+  // Ezzel lépünk vissza vagy előre egy teljes hetet.
   function changeWeek(offset) {
     const newDate = new Date(weekStart);
     newDate.setDate(newDate.getDate() + offset * 7);
     setWeekStart(newDate);
   }
 
+  // A kijelzett hét 7 napját gyűjtjük össze egy tömbbe.
   function getDaysOfWeek() {
     const days = [];
     for (let i = 0; i < 7; i++) {
@@ -54,6 +62,7 @@ export default function TeacherAvailabilityPage() {
     return days;
   }
 
+  // Egy idősáv törlése a backendből, majd a lokális listából is.
   function handleDelete(id) {
     const token = localStorage.getItem("token");
 
@@ -65,6 +74,8 @@ export default function TeacherAvailabilityPage() {
         alert("Nem sikerült törölni az idősávot.");
       });
   }
+
+  // Eldönti, hogy egy nap már múltbeli-e, így ne lehessen rajta módosítani.
   function isPastDay(date) {
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
@@ -75,28 +86,20 @@ export default function TeacherAvailabilityPage() {
     return d < today;
   }
 
-  /*
-    Mit csinál pontosan?
-    csak azon a napon nézi az idősávokat (weekday)
-    minden meglévő sávval összeveti az újat
-    ha bármelyikkel átfed → true
-  */
-  function hasOverlap(dayIndex, newStart, newEnd) {
+  // Megnézi, hogy az új idősáv átfed-e valamelyik meglévővel ugyanazon a napon.
+  function hasOverlap(dateStr, newStart, newEnd) {
     return availability
-        .filter((slot) => slot.weekday === dayIndex)
-        .some((slot) => {
+      .filter((slot) => slot.date === dateStr)
+      .some((slot) => {
         const existingStart = slot.start_time.slice(0, 5);
         const existingEnd = slot.end_time.slice(0, 5);
 
-        return (
-            newStart < existingEnd &&
-            newEnd > existingStart
-        );
-        });
+        return newStart < existingEnd && newEnd > existingStart;
+      });
   }
 
-  // Ellenőrzi az időpontokat, majd a kiválasztott naphoz tartozó elérhetőséget elmenti.
-  function saveSlot(dayIndex) {
+  // Mentés előtt ellenőrzi a beírt időpontokat, majd elküldi az új idősávot.
+  function saveSlot(day) {
     if (!newSlot.start || !newSlot.end) {
       alert("Kérlek válaszd ki a kezdő és záró időpontot!");
       return;
@@ -106,16 +109,20 @@ export default function TeacherAvailabilityPage() {
       alert("A kezdés nem lehet későbbi vagy egyenlő a végénél!");
       return;
     }
-    //!!!Ez a lépés állítja meg a mentést, mielőtt backendhez mennénk.
-    if (hasOverlap(dayIndex, newSlot.start, newSlot.end)) {
-        alert("Az új idősáv átfed egy meglévő elérhetőséggel.");
-        return;
+
+    // A napot egységes YYYY-MM-DD formára alakítjuk.
+    const selectedDate = day.toISOString().slice(0, 10); // YYYY-MM-DD
+
+    // Ha ütközés van, nem engedjük a mentést.
+    if (hasOverlap(selectedDate, newSlot.start, newSlot.end)) {
+      alert("Az új idősáv átfed egy meglévő elérhetőséggel.");
+      return;
     }
 
     const token = localStorage.getItem("token");
 
     const payload = {
-      weekday: dayIndex,
+      date: selectedDate,
       start_time: newSlot.start,
       end_time: newSlot.end,
     };
@@ -126,17 +133,20 @@ export default function TeacherAvailabilityPage() {
         setAddingDay(null);
         setNewSlot({ start: "", end: "" });
       })
-      .catch(() => {
-        alert("Nem sikerült menteni az idősávot.");
+      .catch((err) => {
+        alert(
+          err.response?.data?.message || "Nem sikerült menteni az idősávot.",
+        );
       });
   }
 
+  // Az adott naphoz legenerálja az óránként választható időpontokat.
   function generateTimeOptions(day) {
     const times = [];
     const now = new Date();
 
     for (let h = 0; h < 24; h++) {
-      // mai nap esetén múlt órák tiltása
+      // Mai napra nem engedjük a már elmúlt órákat.
       if (day.toDateString() === now.toDateString() && h <= now.getHours()) {
         continue;
       }
@@ -148,47 +158,46 @@ export default function TeacherAvailabilityPage() {
     return times;
   }
 
+  // A kijelzett hét napjai.
   const days = getDaysOfWeek();
 
-  
-
   /*
-    if (loading) return <p>Betöltés...</p>;
-    if (!user) return <p>Kérlek jelentkezz be.</p>;
-    if (user.role !== "teacher")
-        return <p>Ez az oldal csak tanároknak érhető el.</p>;
-    */
+    Ha később szerepkör-alapú védelem vagy külön betöltési állapot kell,
+    ezek a visszatérési ágak könnyen visszahelyezhetők.
+  */
 
   return (
     <div className="availability-container">
       <div className="availability-header">
         <div className="availability-title">Elérhetőségeim</div>
 
+        {/* Hetet léptető navigáció */}
         <div className="week-nav">
-          <button onClick={() => changeWeek(-1)}>←</button> {/*lepteto*/}
+          <button onClick={() => changeWeek(-1)}>←</button> {/* Előző hét */}
           <span className="week-label">
             {weekStart.toLocaleDateString("hu-HU", {
-              //datom tol- (het kezdete)
+              // A hét kezdőnapja.
               month: "long",
               day: "numeric",
             })}
             {" – "}
             {days[6].toLocaleDateString("hu-HU", {
-              //datom -ig (het vege)
+              // A hét záró napja.
               month: "long",
               day: "numeric",
               year: "numeric",
             })}
           </span>
-          <button onClick={() => changeWeek(1)}>→</button> {/*masik lepteto */}
+          <button onClick={() => changeWeek(1)}>→</button> {/* Következő hét */}
         </div>
       </div>
 
+      {/* A hét napjai oszlopokban jelennek meg. */}
       <div className="week-grid">
         {days.map(
           (
             day,
-            index, //het oszlopok map-el vegig iteral
+            index, // A hét napjain iterálunk végig.
           ) => (
             <div key={index} className="day-column">
               <div className="day-header">
@@ -200,8 +209,9 @@ export default function TeacherAvailabilityPage() {
                 </div>
               </div>
 
+              {/* Az adott naphoz tartozó elérhetőségek listája. */}
               {availability
-                .filter((slot) => slot.weekday === index)
+                .filter((slot) => slot.date === day.toISOString().slice(0, 10))
                 .map((slot) => (
                   <div key={slot.id} className="time-slot">
                     <span>
@@ -213,7 +223,8 @@ export default function TeacherAvailabilityPage() {
                   </div>
                 ))}
 
-              {addingDay === index ? ( //*1*Az első blokk egy feltételes megjelenítés. Azt nézi, hogy az adott napnál éppen nyitva van-e az új idősáv felvitele, vagyis az addingDay === index teljesül-e. Ha igen, akkor a szerkesztő felület jelenik meg, ha nem, akkor csak a + Hozzáadás gomb.
+              {/* Ha erre a napra nyitottuk meg a szerkesztőt, itt jelenik meg a form. */}
+              {addingDay === index ? (
                 <div>
                   <select
                     value={newSlot.start}
@@ -243,7 +254,7 @@ export default function TeacherAvailabilityPage() {
                     ))}
                   </select>
 
-                  <button onClick={() => saveSlot(index)}>Mentés</button>
+                  <button onClick={() => saveSlot(day)}>Mentés</button>
                   <button
                     onClick={() => {
                       setAddingDay(null);
