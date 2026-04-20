@@ -180,7 +180,7 @@ export default function TeacherAvailabilityPage() {
   return (
     <div className="availability-container">
       <div className="availability-header">
-        <div className="availability-title">Elérhetőségeim</div>
+        <h1 className="availability-title">Elérhetőségeim</h1>
 
         {/* Hetet léptető navigáció */}
         <div className="week-nav">
@@ -210,7 +210,10 @@ export default function TeacherAvailabilityPage() {
             day,
             index, // A hét napjain iterálunk végig.
           ) => (
-            <div key={index} className="day-column">
+            <div
+              key={index}
+              className={"day-column" + (isPastDay(day) ? " is-past" : "")}
+            >
               <div className="day-header">
                 <div className="day-name">
                   {day.toLocaleDateString("hu-HU", { weekday: "long" })}
@@ -236,7 +239,7 @@ export default function TeacherAvailabilityPage() {
 
               {/* Ha erre a napra nyitottuk meg a szerkesztőt, itt jelenik meg a form. */}
               {addingDay === index ? (
-                <div>
+                <div className="slot-editor">
                   <select
                     value={newSlot.start}
                     onChange={(e) =>
@@ -265,15 +268,19 @@ export default function TeacherAvailabilityPage() {
                     ))}
                   </select>
 
-                  <button onClick={() => saveSlot(day)}>Mentés</button>
-                  <button
-                    onClick={() => {
-                      setAddingDay(null);
-                      setNewSlot({ start: "", end: "" });
-                    }}
-                  >
-                    Mégse
-                  </button>
+                  <div className="editor-actions">
+                    <button className="primary" onClick={() => saveSlot(day)}>
+                      Mentés
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAddingDay(null);
+                        setNewSlot({ start: "", end: "" });
+                      }}
+                    >
+                      Mégse
+                    </button>
+                  </div>
                 </div>
               ) : (
                 !isPastDay(day) && (
