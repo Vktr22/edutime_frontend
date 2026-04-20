@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import "../css/HomePage.css";
 import { useAuth } from "../contexts/AuthContext";
 import {
   fetchStudentAppointments,
   fetchTeacherAppointments,
 } from "../services/appointments";
 import { useNavigate } from "react-router-dom";
-import {
-  getSeenTimestamp,
-  setSeenTimestamp,
-} from "../services/notificationSeen";
+import { Users, Calendar, Clock } from "lucide-react";
 import { getSeenCancelledIds } from "../services/cancellationSeen";
 
 export default function HomePage() {
@@ -70,31 +67,85 @@ export default function HomePage() {
     return <p>Not logged in</p>;
   }
 
+  // Egyszerű jelző: tanár vagy diák nézetet kell-e kirakni.
+  const isTeacher = user.role === "teacher";
+
+  // Bal oldali gyorsnavigációs kártya tartalma szerepkör szerint.
+  const leftCard = isTeacher
+    ? {
+        title: "Foglalások",
+        sub: "Diákok időpontjai",
+        icon: Calendar,
+        to: "/teacher/appointments",
+      }
+    : {
+        title: "Tanárok böngészése",
+        sub: "Találd meg a megfelelő tanárt",
+        icon: Users,
+        to: "/teachers",
+      };
+
+  // Jobb oldali gyorsnavigációs kártya tartalma szerepkör szerint.
+  const rightCard = isTeacher
+    ? {
+        title: "Elérhetőségek",
+        sub: "Órák beállítása",
+        icon: Clock,
+        to: "/teacher/availability",
+      }
+    : {
+        title: "Időpontjaim",
+        sub: "Foglalásaid megtekintése",
+        icon: Calendar,
+        to: "/my-appointments",
+      };
+
+  // A kiválasztott kártyák ikonjai külön komponensként renderelhetők.
+  const LeftIcon = leftCard.icon;
+  const RightIcon = rightCard.icon;
+
   return (
     <div>
-      <h2>Saját profil</h2>
-      <p>Jó napot, {user.name}</p>
-      <p>Jogosultság: {user.role}</p>
-
-      {/* DIÁK értesítés */}
-      {notification === "student_cancelled" && (
-        <div className="notification-box">
-          {/* Kattintás után az időpontok oldalára lépünk, ahol a részletek látszanak. */}
-          <button onClick={() => navigate("/my-appointments")}>
-            Egy általad foglalt időpontot töröltek
-          </button>
+      {/* Egyszerű értesítési blokk, ha van új törléshez kapcsolódó figyelmeztetés. */}
+      {notification && (
+        <div className="card" style={{ padding: 18, marginBottom: 18 }}>
+          {notification}
         </div>
       )}
 
-      {/* TANÁR értesítés */}
-      {notification === "teacher_cancelled" && (
-        <div className="notification-box">
-          {/* Kattintás után a tanári időpontok oldalára lépünk. */}
-          <button onClick={() => navigate("/teacher/appointments")}>
-            Egy foglalt időpontot töröltek
-          </button>
+      {/* Két kattintható kártya: gyors elérés a legfontosabb oldalakra. */}
+      <div className="home-grid">
+        <div className="home-card" onClick={() => navigate(leftCard.to)}>
+          <div className="home-card__icon">
+            <LeftIcon size={22} />
+          </div>
+          <div>
+            <h3 className="home-card__title">{leftCard.title}</h3>
+            <div className="home-card__sub">{leftCard.sub}</div>
+          </div>
         </div>
-      )}
+
+        <div className="home-card" onClick={() => navigate(rightCard.to)}>
+          <div className="home-card__icon">
+            <RightIcon size={22} />
+          </div>
+          <div>
+            <h3 className="home-card__title">{rightCard.title}</h3>
+            <div className="home-card__sub">{rightCard.sub}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Profilkártya az alap felhasználói adatokkal. */}
+      <div className="card home-profile">
+        <h2>Saját profil</h2>
+        <div className="row">
+          <strong>Név:</strong> {user.name}
+        </div>
+        <div className="row">
+          <strong>Jogosultság:</strong> {user.role}
+        </div>
+      </div>
     </div>
   );
 }

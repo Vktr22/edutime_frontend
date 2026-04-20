@@ -1,3 +1,4 @@
+/* Értesítési doboz alapstílus (pl. törölt időpont figyelmeztetéshez) */
 .notification-box {
   margin-top: 20px;
   padding: 14px;
@@ -6,8 +7,97 @@
   border: 1px solid #e57373;
 }
 
+/* Értesítésen belüli link kiemelése */
 .notification-box a {
   color: #b71c1c;
   font-weight: 600;
   text-decoration: none;
+}
+
+/* src/css/HomePage.css */
+
+/* Két oszlopos gyorsnavigációs kártyarács */
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 18px;
+}
+
+/* Kattintható Home kártya alapstílus */
+.home-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg,
+      rgba(26, 18, 20, 0.92) 0%,
+      rgba(26, 18, 20, 0.78) 100%);
+  box-shadow: var(--shadow-2);
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, filter 120ms ease;
+}
+
+/* Hover állapot: finom kiemelés és enyhe emelés */
+.home-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(197, 3, 55, 0.55);
+}
+
+/* Kártya ikon konténer */
+.home-card__icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(197, 3, 55, 0.12);
+  border: 1px solid rgba(197, 3, 55, 0.25);
+  color: var(--accent);
+}
+
+/* Kártya címsor */
+.home-card__title {
+  font-size: 22px;
+  margin: 0;
+  font-weight: 800;
+}
+
+/* Kártya alcím / magyarázó szöveg */
+.home-card__sub {
+  margin-top: 6px;
+  color: rgba(180, 165, 168, 0.95);
+  font-size: 14px;
+}
+
+/* Profilkártya blokk a Home oldal alján */
+.home-profile {
+  margin-top: 22px;
+  padding: 26px;
+}
+
+/* Profilkártya címsor */
+.home-profile h2 {
+  margin: 0 0 14px 0;
+  font-size: 32px;
+}
+
+/* Profil sorok (név, jogosultság) */
+.home-profile .row {
+  margin-top: 10px;
+  color: rgba(245, 244, 240, 0.9);
+}
+
+/* Sorokon belüli kiemelt kulcsszavak */
+.home-profile .row strong {
+  color: var(--text);
+}
+
+/* Mobil nézet: a kétoszlopos rács egy oszlopra vált */
+@media (max-width: 900px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
 }
