@@ -1,0 +1,89 @@
+/* src/css/TeachersPage.css */
+
+/* Oldalcím ikon + szöveg egy sorban */
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 40px;
+  font-weight: 850;
+}
+
+/* Cím alatti rövid leírás / alcím */
+.page-subtitle {
+  margin-top: 10px;
+  color: rgba(180,165,168,0.95);
+}
+
+/* Tanárkártyák rácselrendezése (desktopon 2 oszlop) */
+.teacher-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* Tanárkártya alapstílus */
+.teacher-card {
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(26,18,20,0.92), rgba(26,18,20,0.78));
+  box-shadow: var(--shadow-2);
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease;
+}
+
+/* Hover állapot: finom emelés és keretkiemelés */
+.teacher-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(197, 3, 55, 0.55);
+}
+
+/* Aktív (kiválasztott) tanárkártya hangsúlyosabb kerettel */
+.teacher-card.is-active {
+  border-color: rgba(197, 3, 55, 0.9);
+  box-shadow: 0 0 0 3px rgba(197, 3, 55, 0.12), var(--shadow-2);
+}
+
+/* Tanár neve a kártya fejlécében */
+.teacher-name {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 850;
+}
+
+/* Meta információk (tantárgy, ár, stb.) blokkja */
+.teacher-meta {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+  color: rgba(245,244,240,0.9);
+}
+
+/* Egy meta sor: ikon/címke + érték */
+.teacher-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(180,165,168,0.95);
+}
+
+/* Meta sorokban a címkék kiemelése */
+.teacher-meta-row strong {
+  color: rgba(245,244,240,0.92);
+  font-weight: 700;
+}
+
+/* Kiemelt (accent) színű részletek */
+.teacher-meta-row .accent {
+  color: var(--accent);
+}
+
+/* Mobil nézet: a két oszlop egy oszlopra vált */
+@media (max-width: 900px) {
+  .teacher-grid {
+    grid-template-columns: 1fr;
+  }
+}
