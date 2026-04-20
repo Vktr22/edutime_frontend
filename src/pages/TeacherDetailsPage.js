@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchTeacherById } from "../services/teachers";
 import { bookAppointment } from "../services/appointments";
@@ -12,7 +12,6 @@ export default function TeacherDetailsPage() {
         A useAuth a globális auth állapotot adja (felhasználó + betöltés).
         A lokális state-ek a tanár adatokat, időpontokat és UI állapotokat kezelik.
     */
-  const navigate = useNavigate();
   const { id } = useParams();
   const { user, loading } = useAuth();
 

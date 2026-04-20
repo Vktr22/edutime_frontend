@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { Calendar, XCircle } from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import {
   fetchTeacherAppointments,
@@ -10,25 +11,27 @@ import {
   getSeenCancelledIds,
 } from "../services/cancellationSeen";
 
+function groupByDate(appts) {
+  return appts.reduce((acc, appt) => {
+    const date = appt.lesson_time.split(" ")[0];
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(appt);
+    return acc;
+  }, {});
+}
+
 export default function TeacherAppointmentsPage() {
+  // Belépett felhasználó és auth betöltési állapot.
   const { user, loading } = useAuth();
 
+  // Összes időpont (nyers lista), valamint általános hibaállapot.
   const [appointments, setAppointments] = useState([]);
   const [error, setError] = useState("");
 
+  // Feldolgozott nézetek: törölt, jövőbeli és múltbeli időpontok.
   const [cancelledByStudent, setCancelledByStudent] = useState([]);
   const [futureGrouped, setFutureGrouped] = useState({});
   const [pastGrouped, setPastGrouped] = useState({});
-
-  // segédfüggvény
-  function groupByDate(appts) {
-    return appts.reduce((acc, appt) => {
-      const date = appt.lesson_time.split(" ")[0];
-      if (!acc[date]) acc[date] = [];
-      acc[date].push(appt);
-      return acc;
-    }, {});
-  }
 
   // tanár törli az időpontot (active -> cancelled_by_teacher)
   const handleCancel = async (appointmentId) => {
@@ -55,14 +58,19 @@ export default function TeacherAppointmentsPage() {
     }
   };
 
-  function processAppointments(data) {
+  // Az időpontlista feldolgozása és bontása UI szekciókhoz.
+  const processAppointments = useCallback((data) => {
     const now = new Date();
+
+    // Már "látott" törölt elemek, hogy ne jelenjenek meg újra értesítésként.
     const seen = new Set(getSeenCancelledIds("teacher"));
 
+    // Jövőbeli aktív időpontok.
     const future = data.filter(
       (a) => a.status === "active" && new Date(a.lesson_time) > now,
     );
 
+    // Múltbeli aktív időpontok.
     const past = data.filter(
       (a) => a.status === "active" && new Date(a.lesson_time) <= now,
     );
@@ -75,8 +83,9 @@ export default function TeacherAppointmentsPage() {
     setCancelledByStudent(cancelled);
     setFutureGrouped(groupByDate(future));
     setPastGrouped(groupByDate(past));
-  }
+  }, []);
 
+  // Tanári időpontok betöltése belépés után.
   useEffect(() => {
     if (!user || user.role !== "teacher") return;
 
@@ -91,110 +100,137 @@ export default function TeacherAppointmentsPage() {
         console.error(err);
         setError("Nem sikerült betölteni az időpontokat.");
       });
-  }, [user]);
+  }, [user, processAppointments]);
 
+  // Guard clause-ok: auth és jogosultság ellenőrzés.
   if (loading) return <p>Betöltés...</p>;
   if (!user) return <p>Kérlek jelentkezz be.</p>;
   if (user.role !== "teacher")
     return <p>Ez az oldal csak tanároknak érhető el.</p>;
 
+  // Sikeres ág: a tanári időpontok teljes oldala renderelődik.
   return (
-    <div className="teacher-appointments-container">
-      <h2>Időpontjaim</h2>
+    <div className="appointments-wrap">
+      <h1 className="appts-title">
+        <Calendar color="#c50337" /> Időpontjaim
+      </h1>
 
-      {/* 🟥 TÖRÖLT */}
+      {/* Diák által törölt, még nem tudomásul vett időpontok listája. */}
       {cancelledByStudent.length > 0 && (
-        <div className="cancelled-block">
-          <h3 className="section-title cancelled-title">Törölt időpontok</h3>
-
-          {cancelledByStudent.map((appt) => (
-            <div key={appt.id} className="appointment-card cancelled">
-              <p>
-                <strong>Időpont:</strong>{" "}
-                {new Date(appt.lesson_time).toLocaleDateString("hu-HU", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}{" "}
-                – {appt.lesson_time.slice(11, 16)}
-              </p>
-              <p>
-                <strong>Diák:</strong> {appt.student.name}
-              </p>
-
-              <button
-                onClick={() => {
-                  addSeenCancelledId("teacher", appt.id);
-                  setCancelledByStudent((prev) =>
-                    prev.filter((a) => a.id !== appt.id),
-                  );
-                }}
-              >
-                Tudomásul vettem
-              </button>
+        <div className="cancelled-alert">
+          <div className="cancelled-alert__content">
+            <div style={{ fontWeight: 900, fontSize: 18 }}>
+              Törölt időpontok
             </div>
-          ))}
+
+            <div className="cancelled-alert__items">
+              {cancelledByStudent.map((appt) => (
+                <div key={appt.id} className="cancelled-item">
+                  <div>
+                    <div style={{ fontWeight: 800 }}>{appt.student.name}</div>
+                    <div style={{ color: "rgba(180,165,168,0.95)" }}>
+                      {new Date(appt.lesson_time).toLocaleDateString("hu-HU", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}{" "}
+                      · {appt.lesson_time.slice(11, 16)}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Látottnak jelöljük, majd helyben eltávolítjuk a listából.
+                      addSeenCancelledId("teacher", appt.id);
+                      setCancelledByStudent((prev) =>
+                        prev.filter((a) => a.id !== appt.id),
+                      );
+                    }}
+                  >
+                    Tudomásul vettem
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
-      {/* 🟦 KÖVETKEZŐ */}
-      <h3 className="section-title">Következő időpontok</h3>
+      {/* Jövőbeli időpontok táblázatos listája (törlés opcióval). */}
+      <h2 className="appts-section-title">Következő időpontok</h2>
       {Object.keys(futureGrouped).length === 0 && (
         <p>Nincs következő időpont.</p>
       )}
 
       {Object.keys(futureGrouped).map((date) => (
-        <div key={date} className="date-block">
-          <h4>
-            {new Date(date).toLocaleDateString("hu-HU", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </h4>
+        <div key={date} className="block">
+          <div className="card table-card">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Diák neve</th>
+                  <th>Dátum</th>
+                  <th>Időpont</th>
+                  <th className="actions">Műveletek</th>
+                </tr>
+              </thead>
 
-          {futureGrouped[date].map((appt) => (
-            <div key={appt.id} className="appointment-card">
-              <p>
-                <strong>Időpont:</strong> {appt.lesson_time.slice(11, 16)}
-              </p>
-              <p>
-                <strong>Diák:</strong> {appt.student.name}
-              </p>
-
-              <button onClick={() => handleCancel(appt.id)}>Törlés</button>
-            </div>
-          ))}
+              <tbody>
+                {futureGrouped[date].map((appt) => (
+                  <tr key={appt.id}>
+                    <td>{appt.student.name}</td>
+                    <td className="muted">
+                      {new Date(date).toLocaleDateString("hu-HU")}
+                    </td>
+                    <td className="muted">{appt.lesson_time.slice(11, 16)}</td>
+                    <td className="actions">
+                      <button
+                        type="button"
+                        className="btn-danger-mini"
+                        onClick={() => handleCancel(appt.id)}
+                      >
+                        <XCircle size={18} />
+                        Törlés
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ))}
 
-      {/* 🟩 KORÁBBI */}
-      <h3 className="section-title">Korábbi időpontok</h3>
+      {/* Múltbeli időpontok csak olvasható listában. */}
+      <h2 className="appts-section-title">Korábbi időpontok</h2>
       {Object.keys(pastGrouped).length === 0 && <p>Nincs korábbi időpont.</p>}
 
       {Object.keys(pastGrouped).map((date) => (
-        <div key={date} className="date-block past">
-          <h4>
-            {new Date(date).toLocaleDateString("hu-HU", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </h4>
+        <div key={date} className="block">
+          <div className="card table-card">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Diák neve</th>
+                  <th>Dátum</th>
+                  <th>Időpont</th>
+                </tr>
+              </thead>
 
-          {pastGrouped[date].map((appt) => (
-            <div key={appt.id} className="appointment-card disabled">
-              <p>
-                <strong>Időpont:</strong> {appt.lesson_time.slice(11, 16)}
-              </p>
-              <p>
-                <strong>Diák:</strong> {appt.student.name}
-              </p>
-            </div>
-          ))}
+              <tbody>
+                {pastGrouped[date].map((appt) => (
+                  <tr key={appt.id}>
+                    <td>{appt.student.name}</td>
+                    <td className="muted">
+                      {new Date(date).toLocaleDateString("hu-HU")}
+                    </td>
+                    <td className="muted">{appt.lesson_time.slice(11, 16)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ))}
     </div>

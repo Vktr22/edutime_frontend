@@ -1,65 +1,183 @@
-/* --- Konténerek --- */
-.my-appointments-container {
-  max-width: 900px;
+/* src/css/AppointmentsPage.css */
+
+/* Közös külső konténer (diák + tanár oldalakhoz) */
+.appointments-wrap {
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0;
 }
 
-/* --- Dátum blokk (napok) --- */
-.date-block {
-  margin-bottom: 30px;
-  padding: 15px 0;
-  border-bottom: 1px solid #ddd;
+/* Oldalcím blokk */
+.appts-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 40px;
+  font-weight: 850;
 }
 
-.date-block h4 {
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-  font-weight: 600;
+/* Szekciócímek (pl. következő / korábbi időpontok) */
+.appts-section-title {
+  margin: 22px 0 14px;
+  font-size: 24px;
+  font-weight: 900;
 }
 
-/* --- Kártyák --- */
-.appointment-card {
-  background: #f8f8f8;
-  padding: 12px 15px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
+/* Sikeres foglalás visszajelző doboza */
+.appt-success {
+  margin-top: 16px;
+  padding: 18px;
 }
 
-/* --- Múltbeli kártya --- */
-.appointment-card.disabled {
-  opacity: 0.6;
-  background: #f2f2f2;
+/* Törölt időpontokra figyelmeztető blokk */
+.cancelled-alert {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid rgba(197, 3, 55, 0.95);
+  border-radius: var(--radius-lg);
+  background: rgba(197, 3, 55, 0.10);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
 }
 
-/* --- Törlés gomb --- */
-.appointment-card button {
-  background: #d9534f;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  margin-top: 8px;
-  border-radius: 5px;
+/* A figyelmeztető blokk szöveges tartalma */
+.cancelled-alert__content {
+  display: grid;
+  gap: 10px;
+  color: rgba(245, 244, 240, 0.92);
+}
+
+/* Törölt elemek listája */
+.cancelled-alert__items {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* Egy törölt időpont sora */
+.cancelled-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(62, 36, 40, 0.9);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+/* "Tudomásul vettem" jellegű gomb a törölt sorban */
+.cancelled-item button {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 900;
   cursor: pointer;
 }
 
-.appointment-card button:hover {
-  background: #c9302c;
+/* Táblázatot körülvevő kártya */
+.table-card {
+  overflow: hidden;
 }
 
-/* --- Szekció címek --- */
-.section-title {
-  font-size: 1.4rem;
-  margin-top: 30px;
-  margin-bottom: 10px;
-  font-weight: bold;
+/* Időpontok táblázata */
+.table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.appointment-success {
-  margin: 16px 0;
-  padding: 14px;
-  border: 1px solid #4caf50;
-  background-color: #e8f5e9;
-  border-radius: 8px;
+/* Táblázat fejléc cellák */
+.table thead th {
+  text-align: left;
+  padding: 16px 18px;
+  font-size: 14px;
+  color: rgba(245, 244, 240, 0.9);
+  background: rgba(0, 0, 0, 0.14);
+  border-bottom: 1px solid rgba(62, 36, 40, 0.7);
+}
+
+/* Táblázat törzs cellák */
+.table tbody td {
+  padding: 18px;
+  border-bottom: 1px solid rgba(62, 36, 40, 0.55);
+  color: rgba(245, 244, 240, 0.92);
+}
+
+/* Utolsó sor alatt ne jelenjen meg plusz elválasztó */
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Halványított segédszöveg cellákhoz */
+.table td.muted {
+  color: rgba(180, 165, 168, 0.95);
+}
+
+/* Művelet oszlop (pl. törlés) */
+.table .actions {
+  width: 160px;
+  text-align: right;
+}
+
+/* Kisméretű törlés gomb (pill forma, Figma jelleg) */
+.btn-danger-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(197, 3, 55, 0.35);
+  background: rgba(197, 3, 55, 0.12);
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+/* Törlés gomb hover állapot */
+.btn-danger-mini:hover {
+  border-color: rgba(197, 3, 55, 0.65);
+  background: rgba(197, 3, 55, 0.16);
+}
+
+/* Általános szekcióköz */
+.block {
+  margin-top: 10px;
+}
+
+/* Reszponzív nézet: a táblázat sorai blokkos elrendezésre váltanak */
+@media (max-width: 900px) {
+  .table thead {
+    display: none;
+  }
+
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tbody tr {
+    border-bottom: 1px solid rgba(62, 36, 40, 0.55);
+    padding: 8px 0;
+  }
+
+  .table tbody td {
+    border-bottom: 0;
+    padding: 12px 18px;
+  }
+
+  .table .actions {
+    text-align: left;
+    width: auto;
+    padding-bottom: 18px;
+  }
+
+  .cancelled-alert {
+    flex-direction: column;
+  }
 }
