@@ -23,6 +23,8 @@ export default function MyAppointmentsStudPage() {
   // Hiba üzenet, ha az adatbetöltés nem sikerül.
   const [error, setError] = useState("");
 
+  const [showBookingSuccess, setShowBookingSuccess] = useState(!!fromBooking);
+
   // Jövőbeli időpontok csoportosítva nap szerint.
   const [futureGrouped, setFutureGrouped] = useState({});
 
@@ -140,6 +142,15 @@ export default function MyAppointmentsStudPage() {
         setError("Nem sikerült betölteni az időpontokat.");
       });
   }, [user]);
+  useEffect(() => {
+    if (!fromBooking) return;
+
+    const id = setTimeout(() => {
+      setShowBookingSuccess(false);
+    }, 30000); // 30 mp
+
+    return () => clearTimeout(id);
+  }, [fromBooking]);
 
   // Az auth állapot betöltése közben ne mutassunk félkész oldalt.
   if (loading) return <p>Betöltés...</p>;
@@ -155,7 +166,7 @@ export default function MyAppointmentsStudPage() {
     <div className="my-appointments-container">
       <h2>Saját időpontjaim</h2>
       {/* Újonnan foglalt időpont sikeres üzenetéhez mutassuk az értesítést. */}
-      {fromBooking && (
+      {showBookingSuccess && (
         <div className="appointment-success">
           <p>
             <strong>Sikeres foglalás!</strong>
