@@ -70,8 +70,10 @@ export default function TeacherAvailabilityPage() {
       .then(() => {
         setAvailability((prev) => prev.filter((a) => a.id !== id));
       })
-      .catch(() => {
-        alert("Nem sikerült törölni az idősávot.");
+      .catch((err) => {
+        alert(
+          err.response?.data?.message || "Nem sikerült törölni az idősávot.",
+        );
       });
   }
 
