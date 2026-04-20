@@ -3,7 +3,7 @@
 .app-shell {
   min-height: 100vh;
   display: flex;
-  background-image: url("/assets/math-background-fullscreen.svg");
+  background-image: url("../assets/math-background-fullscreen.svg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -41,7 +41,7 @@
 
 .home-hero {
   height: 220px;
-  background-image: url("/assets/math-background-header.svg");
+  background-image: url("../assets/math-background-header.svg");
   background-size: cover;
   background-position: center;
   border-bottom: 1px solid var(--border);
