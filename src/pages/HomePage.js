@@ -10,6 +10,7 @@ import {
   getSeenTimestamp,
   setSeenTimestamp,
 } from "../services/notificationSeen";
+import { getSeenCancelledIds } from "../services/cancellationSeen";
 
 export default function HomePage() {
   // Az AuthContextből jön a belépett felhasználó és a betöltési állapot.
@@ -21,107 +22,50 @@ export default function HomePage() {
   // Melyik értesítési dobozt mutassuk (diákos / tanáros / nincs).
   const [notification, setNotification] = useState(null);
 
-  // A legfrissebb törlés időbélyege (ISO), ezzel döntjük el, van-e új, még nem látott értesítés.
-  const [latestCancelMarker, setLatestCancelMarker] = useState(null); // ISO string
-
   // Home oldali értesítés: csak akkor jelez, ha a felhasználó szerepköréhez tartozó törlés még nincs "láttam" állapotban.
   useEffect(() => {
+    // Az API hívásokhoz szükséges token.
     const token = localStorage.getItem("token");
 
     // Token és user nélkül nem tudunk lekérdezni.
     if (!token || !user) return;
 
-    // Előzőleg eltárolt "láttam" időbélyeg.
-    const seen = getSeenTimestamp(user.role); // ISO vagy null
+    // A már "látott" törlések ID-i, hogy csak az újakat jelezzük értesítésként.
+    const seen = new Set(getSeenCancelledIds(user.role));
 
     // DIÁK ág: a tanár által törölt időpontokat vizsgáljuk.
     if (user.role === "student") {
       fetchStudentAppointments(token)
         .then((data) => {
-          const cancelled = data.filter(
-            (appt) => appt.status === "cancelled_by_teacher",
+          // Van-e legalább egy olyan törölt időpont, amit még nem jelöltünk látottnak.
+          const unseenExists = data.some(
+            (a) =>
+              a.status === "cancelled_by_teacher" && !seen.has(Number(a.id)),
           );
-
-          if (cancelled.length === 0) {
-            // Nincs törölt időpont, ezért értesítés sem kell.
-            setNotification(null);
-            setLatestCancelMarker(null);
-            return;
-          }
-
-          // Marker: a legfrissebb törlés ideje (updated_at), fallbackként lesson_time.
-          const latest = cancelled
-            .map((a) => a.updated_at || a.lesson_time)
-            .sort()
-            .at(-1);
-
-          setLatestCancelMarker(latest);
-
-          // Csak akkor mutatunk értesítést, ha a legfrissebb törlés újabb a látottnál.
-          if (!seen || (latest && latest > seen)) {
-            setNotification("student_cancelled");
-          } else {
-            setNotification(null);
-          }
+          setNotification(unseenExists ? "student_cancelled" : null);
         })
-        .catch(() => {
-          // Hiba esetén ne omoljon össze a Home oldal.
-        });
+        .catch(() => setNotification(null));
     }
 
     // TANÁR ág: a diák által törölt időpontokat vizsgáljuk.
     if (user.role === "teacher") {
       fetchTeacherAppointments(token)
         .then((data) => {
-          const cancelled = data.filter(
-            (appt) => appt.status === "cancelled_by_student",
+          // Van-e legalább egy olyan törölt időpont, amit még nem jelöltünk látottnak.
+          const unseenExists = data.some(
+            (a) =>
+              a.status === "cancelled_by_student" && !seen.has(Number(a.id)),
           );
-
-          if (cancelled.length === 0) {
-            // Nincs törölt időpont, ezért értesítés sem kell.
-            setNotification(null);
-            setLatestCancelMarker(null);
-            return;
-          }
-
-          // Marker: a legfrissebb törlés ideje (updated_at), fallbackként lesson_time.
-          const latest = cancelled
-            .map((a) => a.updated_at || a.lesson_time)
-            .sort()
-            .at(-1);
-
-          setLatestCancelMarker(latest);
-
-          // Csak akkor mutatunk értesítést, ha a legfrissebb törlés újabb a látottnál.
-          if (!seen || (latest && latest > seen)) {
-            setNotification("teacher_cancelled");
-          } else {
-            setNotification(null);
-          }
+          setNotification(unseenExists ? "teacher_cancelled" : null);
         })
-        .catch(() => {
-          // Hiba esetén ne omoljon össze a Home oldal.
-        });
+        .catch(() => setNotification(null));
     }
   }, [user]);
 
-  // Értesítésre kattintás: mentjük, hogy a felhasználó látta, majd a megfelelő listára irányítunk.
-  function handleOpenNotification() {
-    if (!user) return;
-
-    // Kattintás = "láttam" állapot mentése.
-    if (latestCancelMarker) {
-      setSeenTimestamp(user.role, latestCancelMarker);
-    }
-    setNotification(null);
-
-    // Szerepkör alapján másik oldalra navigálunk.
-    if (user.role === "student") navigate("/my-appointments");
-    else navigate("/teacher/appointments");
-  }
-
+  // Amíg az auth állapot tölt, addig ne rendereljünk félkész profilt.
   if (loading) return <p>Loading user...</p>;
 
+  // Be nem jelentkezett felhasználó esetén egyszerű fallback üzenet.
   if (!user) {
     return <p>Not logged in</p>;
   }
@@ -135,7 +79,8 @@ export default function HomePage() {
       {/* DIÁK értesítés */}
       {notification === "student_cancelled" && (
         <div className="notification-box">
-          <button onClick={handleOpenNotification}>
+          {/* Kattintás után az időpontok oldalára lépünk, ahol a részletek látszanak. */}
+          <button onClick={() => navigate("/my-appointments")}>
             Egy általad foglalt időpontot töröltek
           </button>
         </div>
@@ -144,7 +89,8 @@ export default function HomePage() {
       {/* TANÁR értesítés */}
       {notification === "teacher_cancelled" && (
         <div className="notification-box">
-          <button onClick={handleOpenNotification}>
+          {/* Kattintás után a tanári időpontok oldalára lépünk. */}
+          <button onClick={() => navigate("/teacher/appointments")}>
             Egy foglalt időpontot töröltek
           </button>
         </div>

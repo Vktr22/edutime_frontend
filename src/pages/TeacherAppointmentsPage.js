@@ -5,6 +5,10 @@ import {
   cancelTeacherAppointment,
 } from "../services/appointments";
 import "../css/AppointmentsPage.css";
+import {
+  addSeenCancelledId,
+  getSeenCancelledIds,
+} from "../services/cancellationSeen";
 
 export default function TeacherAppointmentsPage() {
   const { user, loading } = useAuth();
@@ -53,6 +57,7 @@ export default function TeacherAppointmentsPage() {
 
   function processAppointments(data) {
     const now = new Date();
+    const seen = new Set(getSeenCancelledIds("teacher"));
 
     const future = data.filter(
       (a) => a.status === "active" && new Date(a.lesson_time) > now,
@@ -62,8 +67,10 @@ export default function TeacherAppointmentsPage() {
       (a) => a.status === "active" && new Date(a.lesson_time) <= now,
     );
 
-    // csak EZ jelenhet meg töröltként tanárnál
-    const cancelled = data.filter((a) => a.status === "cancelled_by_student");
+    // csak EZ jelenhet meg töröltként tanárnál, és csak ami még nincs láttamozva
+    const cancelled = data.filter(
+      (a) => a.status === "cancelled_by_student" && !seen.has(Number(a.id)),
+    );
 
     setCancelledByStudent(cancelled);
     setFutureGrouped(groupByDate(future));
@@ -117,11 +124,12 @@ export default function TeacherAppointmentsPage() {
               </p>
 
               <button
-                onClick={() =>
+                onClick={() => {
+                  addSeenCancelledId("teacher", appt.id);
                   setCancelledByStudent((prev) =>
                     prev.filter((a) => a.id !== appt.id),
-                  )
-                }
+                  );
+                }}
               >
                 Tudomásul vettem
               </button>
