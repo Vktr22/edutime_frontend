@@ -2,136 +2,134 @@
 
 /* Teljes képernyős bejelentkező háttér és középre igazítás */
 .login-shell {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 28px 16px;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 28px 16px;
 
-  background-image: url("../../public/assets/math-background-fullscreen.svg");
-  background-size: cover;
-  background-position: center;
+    background-image: url("/assets/math-background-fullscreen.svg");
+    background-size: cover;
+    background-position: center;
 }
 
 /* Bejelentkező kártya alapstílusa */
 .login-card {
-  width: min(620px, 100%);
-  padding: 34px 34px 26px;
-  border-radius: 26px;
-  border: 1px solid var(--border);
-  background: linear-gradient(
-    180deg,
-    rgba(26, 18, 20, 0.88) 0%,
-    rgba(26, 18, 20, 0.72) 100%
-  );
-  box-shadow: var(--shadow-1);
+    width: min(620px, 100%);
+    padding: 34px 34px 26px;
+    border-radius: 26px;
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg,
+            rgba(26, 18, 20, 0.88) 0%,
+            rgba(26, 18, 20, 0.72) 100%);
+    box-shadow: var(--shadow-1);
 }
 
 /* Kör alakú fejléc ikon a kártya tetején */
 .login-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 14px;
+    width: 64px;
+    height: 64px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 14px;
 
-  border: 1px solid rgba(197, 3, 55, 0.45);
-  background: rgba(197, 3, 55, 0.10);
-  color: var(--accent);
+    border: 1px solid rgba(197, 3, 55, 0.45);
+    background: rgba(197, 3, 55, 0.10);
+    color: var(--accent);
 }
 
 /* Bejelentkezés főcím */
 .login-title {
-  margin: 0;
-  text-align: center;
-  font-size: 40px;
-  font-weight: 900;
+    margin: 0;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 900;
 }
 
 /* Cím alatti rövid leírás */
 .login-subtitle {
-  margin-top: 10px;
-  text-align: center;
-  color: rgba(180, 165, 168, 0.95);
+    margin-top: 10px;
+    text-align: center;
+    color: rgba(180, 165, 168, 0.95);
 }
 
 /* Űrlap mezők függőleges elrendezése */
 .login-form {
-  margin-top: 26px;
-  display: grid;
-  gap: 16px;
+    margin-top: 26px;
+    display: grid;
+    gap: 16px;
 }
 
 /* Mező címkék */
 .login-field label {
-  display: block;
-  font-weight: 800;
-  margin-bottom: 10px;
-  color: rgba(245, 244, 240, 0.9);
+    display: block;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: rgba(245, 244, 240, 0.9);
 }
 
 /* Input mezők alapstílusa */
 .login-field input {
-  width: 100%;
-  padding: 14px 14px;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background: rgba(0,0,0,0.22);
-  color: var(--text);
-  outline: none;
+    width: 100%;
+    padding: 14px 14px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.22);
+    color: var(--text);
+    outline: none;
 }
 
 /* Input fókusz állapot */
 .login-field input:focus {
-  border-color: rgba(197, 3, 55, 0.95);
-  box-shadow: 0 0 0 3px rgba(197, 3, 55, 0.18);
+    border-color: rgba(197, 3, 55, 0.95);
+    box-shadow: 0 0 0 3px rgba(197, 3, 55, 0.18);
 }
 
 /* Elsődleges bejelentkezés gomb */
 .login-button {
-  margin-top: 6px;
-  width: 100%;
-  height: 54px;
-  border-radius: 18px;
-  border: 0;
-  background: var(--accent);
-  color: var(--text);
-  font-weight: 900;
-  font-size: 16px;
-  cursor: pointer;
+    margin-top: 6px;
+    width: 100%;
+    height: 54px;
+    border-radius: 18px;
+    border: 0;
+    background: var(--accent);
+    color: var(--text);
+    font-weight: 900;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 /* Gomb hover visszajelzés */
 .login-button:hover {
-  filter: brightness(1.06);
+    filter: brightness(1.06);
 }
 
 /* Hibaüzenet doboz sikertelen bejelentkezéshez */
 .login-error {
-  margin-top: 12px;
-  padding: 14px;
-  border-radius: 16px;
-  border: 1px solid rgba(197, 3, 55, 0.65);
-  background: rgba(197, 3, 55, 0.12);
-  color: rgba(245, 244, 240, 0.95);
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(197, 3, 55, 0.65);
+    background: rgba(197, 3, 55, 0.12);
+    color: rgba(245, 244, 240, 0.95);
 }
 
 /* Alsó segédszöveg (pl. regisztrációs link) */
 .login-footer {
-  margin-top: 18px;
-  text-align: center;
-  color: rgba(180, 165, 168, 0.95);
-  line-height: 1.6;
+    margin-top: 18px;
+    text-align: center;
+    color: rgba(180, 165, 168, 0.95);
+    line-height: 1.6;
 }
 
 /* Lábléc hivatkozás kiemelése */
 .login-footer a {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 900;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 900;
 }
 
 /* Lábléc link hover */
 .login-footer a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
