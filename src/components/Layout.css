@@ -74,7 +74,7 @@
 
     /* Főcím tipográfiája a Home hero részben */
     .app-sidebar {
-        width: 100%;
+        
         flex: 0 0 auto;
         border-right: 0;
         border-bottom: 1px solid var(--border);
@@ -151,5 +151,96 @@
     /* home hero legyen alacsonyabb mobilon */
     .home-hero {
         height: 210px;
+    }
+}
+
+/* Mobile bar hidden by default */
+.app-mobilebar {
+    display: none;
+}
+
+.app-overlay {
+    display: none;
+}
+
+/* MOBILE DRAWER */
+@media (max-width: 900px) {
+
+    /* ne legyen column stacking */
+    .app-shell {
+        flex-direction: column;
+    }
+
+    /* top bar */
+    .app-mobilebar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 12px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(10, 5, 6, 0.75);
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        backdrop-filter: blur(8px);
+    }
+
+    .app-mobilebrand {
+        font-weight: 900;
+        letter-spacing: 0.2px;
+        font-size: 18px;
+    }
+
+    .app-hamburger {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(26, 18, 20, 0.35);
+        color: rgba(245, 244, 240, 0.92);
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    /* overlay */
+    .app-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 160ms ease;
+        z-index: 45;
+    }
+
+    .app-overlay.is-open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* sidebar becomes drawer */
+    .app-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 84vw;
+        max-width: 320px;
+
+        transform: translateX(-105%);
+        transition: transform 180ms ease;
+        z-index: 50;
+
+        border-right: 1px solid var(--border);
+    }
+
+    .app-sidebar.is-open {
+        transform: translateX(0);
+    }
+
+    /* content full width */
+    .app-content {
+        padding: 14px 12px;
     }
 }

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Navigation from "./Navigation";
 import "./Layout.css";
@@ -9,6 +10,12 @@ export default function Layout() {
 
   // A Home oldal külön hero + top nav elrendezést kap.
   const isHome = location.pathname === "/home";
+  const [isNavOpen, setIsNavOpen] = useState(false);
+
+  // route váltáskor csukjuk be (kényelmes mobilon)
+  useEffect(() => {
+    setIsNavOpen(false);
+  }, [location.pathname]);
 
   // A felhasználói adatokat a fejléc szövegéhez használjuk.
   const { user } = useAuth();
@@ -50,12 +57,29 @@ export default function Layout() {
   // Minden más oldalon: bal oldali navigáció + jobb oldali tartalom.
   return (
     <div className="app-shell">
-      {/* Oldalsáv navigáció a belső oldalakhoz. */}
-      <aside className="app-sidebar">
+      {/* Mobile top bar (hamburger) */}
+      <div className="app-mobilebar">
+        <button
+          type="button"
+          className="app-hamburger"
+          onClick={() => setIsNavOpen((v) => !v)}
+          aria-label="Menü"
+        >
+          ☰
+        </button>
+        <div className="app-mobilebrand">EduTime</div>
+      </div>
+
+      {/* overlay */}
+      <div
+        className={"app-overlay" + (isNavOpen ? " is-open" : "")}
+        onClick={() => setIsNavOpen(false)}
+      />
+
+      <aside className={"app-sidebar" + (isNavOpen ? " is-open" : "")}>
         <Navigation variant="side" />
       </aside>
 
-      {/* Az aktuális aloldal tartalma (nested route). */}
       <main className="app-content">
         <div className="app-content-inner">
           <Outlet />
