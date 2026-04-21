@@ -180,4 +180,8 @@
   .cancelled-alert {
     flex-direction: column;
   }
+  .btn-danger-mini {
+    width: 100%;
+    justify-content: center;
+  }
 }

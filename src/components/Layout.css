@@ -1,141 +1,155 @@
 /* src/components/Layout.css */
 
 .app-shell {
-  min-height: 100vh;
-  display: flex;
-  background-image: url("../../public/assets/math-background-fullscreen.svg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    background-image: url("../../public/assets/math-background-fullscreen.svg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 /* Oldalsáv: fix szélességű navigációs terület */
 .app-sidebar {
-  width: 280px;
-  flex: 0 0 280px;
-  padding: 26px 18px;
-  border-right: 1px solid var(--border);
-  background: linear-gradient(
-    180deg,
-    rgba(26, 18, 20, 0.55) 0%,
-    rgba(10, 5, 6, 0.75) 100%
-  );
+    width: 280px;
+    flex: 0 0 280px;
+    padding: 26px 18px;
+    border-right: 1px solid var(--border);
+    background: linear-gradient(180deg,
+            rgba(26, 18, 20, 0.55) 0%,
+            rgba(10, 5, 6, 0.75) 100%);
 }
 
 /* Tartalomrész: a fő oldalblokk */
 .app-content {
-  flex: 1;
-  padding: 26px 28px;
+    flex: 1;
+    padding: 26px 28px;
 }
 
 /* Olvasható tartalomszélesség megtartása (Figma tervhez igazítva) */
 .app-content-inner {
-  max-width: 1180px;
-  margin: 0 auto;
+    max-width: 1180px;
+    margin: 0 auto;
 }
 
 /* Home oldalhoz tartozó speciális layout elemek */
 .home-shell {
-  min-height: 100vh;
+    min-height: 100vh;
 }
 
 .home-hero {
-  height: 220px;
-  background-image: url("../../public/assets/math-background-header.svg");
-  background-size: cover;
-  background-position: center;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: flex-end;
+    height: 220px;
+    background-image: url("../../public/assets/math-background-header.svg");
+    background-size: cover;
+    background-position: center;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
 }
 
 .home-hero-inner {
-  max-width: 1180px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 30px 28px 24px;
+    max-width: 1180px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 30px 28px 24px;
 }
 
 .home-main {
-  padding: 22px 28px 28px;
+    padding: 22px 28px 28px;
 }
 
 .home-main-inner {
-/* Hero belső felépítése: címblokk + navigáció egymás alatt */
-  max-width: 1180px;
-  margin: 0 auto;
+    /* Hero belső felépítése: címblokk + navigáció egymás alatt */
+    max-width: 1180px;
+    margin: 0 auto;
 }
 
 /* Mobil nézet: az oldalsáv felülre kerül, a tartalom alá rendeződik */
 @media (max-width: 900px) {
-/* Címblokk felső térköze, hogy a fejléc ne tapadjon fel */
-  .app-shell {
-    flex-direction: column;
-  }
 
-/* Főcím tipográfiája a Home hero részben */
-  .app-sidebar {
-    width: 100%;
-    flex: 0 0 auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-  }
+    /* Címblokk felső térköze, hogy a fejléc ne tapadjon fel */
+    .app-shell {
+        flex-direction: column;
+    }
 
-  .app-content {
-    padding: 18px 16px;
-  }
+    /* Főcím tipográfiája a Home hero részben */
+    .app-sidebar {
+        width: 100%;
+        flex: 0 0 auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+    }
 
-  .home-hero-inner,
-  .home-main-inner,
-  .app-content-inner {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
+    .app-content {
+        padding: 18px 16px;
+    }
+
+    .home-hero-inner,
+    .home-main-inner,
+    .app-content-inner {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
 }
+
 .home-hero-top {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .home-hero-titleBlock {
-  padding-top: 12px;
+    padding-top: 12px;
 }
 
 .home-hero-title {
-  margin: 0;
-  font-size: 44px;
-  line-height: 1.05;
-  font-weight: 850;
-  letter-spacing: 0.2px;
-  text-shadow: 0 10px 40px rgba(0,0,0,0.55);
+    margin: 0;
+    font-size: 44px;
+    line-height: 1.05;
+    font-weight: 850;
+    letter-spacing: 0.2px;
+    text-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
 }
 
 /* Alcím a jogosultsági információhoz */
 .home-hero-sub {
-  margin-top: 10px;
-  color: rgba(245, 244, 240, 0.78);
-  font-size: 16px;
+    margin-top: 10px;
+    color: rgba(245, 244, 240, 0.78);
+    font-size: 16px;
 }
 
 /* A hero alatti navigációs panel keretezett, enyhén áttetsző dobozban */
 .home-hero-nav {
-  margin-top: 8px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: rgba(26, 18, 20, 0.35);
-  box-shadow: var(--shadow-2);
+    margin-top: 8px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: rgba(26, 18, 20, 0.35);
+    box-shadow: var(--shadow-2);
 }
 
 /* Hero magasság finomhangolás (Figma tervhez közelítve) */
 .home-hero {
-  height: 240px; /* korábban 220 volt */
+    height: 240px;
+    /* korábban 220 volt */
 }
 
 /* Mobilon kisebb címméret a jobb tördeléshez */
 @media (max-width: 900px) {
-  .home-hero-title {
-    font-size: 34px;
-  }
+    .home-hero-title {
+        font-size: 34px;
+    }
+
+    .app-sidebar {
+        padding: 14px 12px;
+    }
+
+    .app-content {
+        padding: 14px 12px;
+    }
+
+    /* home hero legyen alacsonyabb mobilon */
+    .home-hero {
+        height: 210px;
+    }
 }

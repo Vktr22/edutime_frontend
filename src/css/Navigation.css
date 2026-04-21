@@ -136,4 +136,18 @@
   .nav__logout {
     margin-left: 0;
   }
+   .nav__brand {
+    font-size: 22px;
+  }
+
+  .nav__link {
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+
+  .nav__logout {
+    width: 100%;
+    justify-content: center;
+  }
 }

@@ -222,4 +222,17 @@
   .week-grid {
     grid-template-columns: 1fr;
   }
+   .slot-btn {
+    padding: 12px 12px;
+    border-radius: 14px;
+  }
+
+  .teacher-info__name {
+    font-size: 28px;
+  }
+
+  .weekbar {
+    font-size: 18px;
+    gap: 12px;
+  }
 }

@@ -100,4 +100,16 @@
   .home-grid {
     grid-template-columns: 1fr;
   }
+
+  .home-card {
+    padding: 18px;
+  }
+
+  .home-card__title {
+    font-size: 20px;
+  }
+
+  .home-profile h2 {
+    font-size: 26px;
+  }
 }

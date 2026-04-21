@@ -217,4 +217,12 @@
   .week-label {
     min-width: 0;
   }
+  .editor-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .week-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
 }

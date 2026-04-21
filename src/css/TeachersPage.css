@@ -86,4 +86,15 @@
   .teacher-grid {
     grid-template-columns: 1fr;
   }
+  .page-title {
+    font-size: 32px;
+  }
+
+  .teacher-card {
+    padding: 18px;
+  }
+
+  .teacher-name {
+    font-size: 22px;
+  }
 }
