@@ -7,7 +7,7 @@
     place-items: center;
     padding: 28px 16px;
 
-    background-image: url("/assets/math-background-fullscreen.svg");
+    background-image: url("../../public/assets/math-background-fullscreen.svg");
     background-size: cover;
     background-position: center;
 }
