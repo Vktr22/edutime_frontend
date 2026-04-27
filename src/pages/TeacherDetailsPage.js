@@ -5,6 +5,7 @@ import { fetchTeacherById } from "../services/teachers";
 import { bookAppointment } from "../services/appointments";
 import { fetchAvailableSlots } from "../services/availability";
 import "../css/TeacherDetailsPage.css";
+import { parseSqlDateTimeLocal } from "../utils/datetimeLocal";
 
 export default function TeacherDetailsPage() {
   /*
@@ -223,7 +224,7 @@ export default function TeacherDetailsPage() {
             {availableSlots
               .filter(
                 (slot) =>
-                  new Date(slot.start).toDateString() === day.toDateString(),
+                  parseSqlDateTimeLocal(slot.start).toDateString() === day.toDateString(),
               )
               .map((slot) => {
                 const start = slot.start.slice(11, 16);
@@ -244,7 +245,7 @@ export default function TeacherDetailsPage() {
                         return [
                           ...prev,
                           {
-                            date: new Date(slot.start),
+                            date: parseSqlDateTimeLocal(slot.start),
                             start,
                             raw: slot.start,
                           },
@@ -260,7 +261,7 @@ export default function TeacherDetailsPage() {
             {/* empty state per-day */}
             {availableSlots.filter(
               (slot) =>
-                new Date(slot.start).toDateString() === day.toDateString(),
+                parseSqlDateTimeLocal(slot.start).toDateString() === day.toDateString(),
             ).length === 0 &&
               !loadingSlots && (
                 <div className="no-slot">Nincs elérhető időpont</div>

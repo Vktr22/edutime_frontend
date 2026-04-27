@@ -1,4 +1,4 @@
-
+import { parseSqlDateTimeLocal } from "../utils/datetimeLocal";
 /*
     ✅ ugyanaz a kártya:
 
@@ -22,7 +22,7 @@ export default function AppointmentCard({
     >
       <p>
         <strong>Időpont:</strong>{" "}
-        {new Date(appt.lesson_time).toLocaleDateString(
+        {parseSqlDateTimeLocal(appt.lesson_time).toLocaleDateString(
           "hu-HU",
           {
             weekday: "long",

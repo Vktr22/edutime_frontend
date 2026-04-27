@@ -9,6 +9,7 @@ import {
   addSeenCancelledId,
   getSeenCancelledIds,
 } from "../services/cancellationSeen";
+import { parseSqlDateTimeLocal, parseYMDLocal } from "../utils/datetimeLocal";
 
 export default function MyAppointmentsStudPage() {
   // Az előző oldal state-je, hogy tudjuk, foglalásból érkeztünk-e.
@@ -58,18 +59,18 @@ export default function MyAppointmentsStudPage() {
 
         // Jövőbeli aktív időpontok.
         const future = updated.filter(
-          (a) => new Date(a.lesson_time) > now && a.status === "active",
+          (a) => parseSqlDateTimeLocal(a.lesson_time) > now && a.status === "active",
         );
 
         // Múltbeli aktív időpontok.
         const past = updated.filter(
-          (a) => new Date(a.lesson_time) <= now && a.status === "active",
+          (a) => parseSqlDateTimeLocal(a.lesson_time) <= now && a.status === "active",
         );
 
         // Segédfüggvény: időpontok csoportosítása YYYY-MM-DD nap szerint.
         function groupByDate(appts) {
           return appts.reduce((acc, appt) => {
-            const date = appt.lesson_time.split(" ")[0];
+            const date = appt.lesson_time.slice(0, 10);
             if (!acc[date]) acc[date] = [];
             acc[date].push(appt);
             return acc;
@@ -127,7 +128,7 @@ export default function MyAppointmentsStudPage() {
         // Segédfüggvény: időpontok nap szerinti csoportosítása.
         function groupByDate(appts) {
           return appts.reduce((acc, appt) => {
-            const date = appt.lesson_time.split(" ")[0]; // YYYY-MM-DD
+            const date = appt.lesson_time.slice(0, 10);
             if (!acc[date]) acc[date] = [];
             acc[date].push(appt);
             return acc;
@@ -199,7 +200,7 @@ export default function MyAppointmentsStudPage() {
                       className="muted"
                       style={{ color: "rgba(180,165,168,0.95)" }}
                     >
-                      {new Date(appt.lesson_time).toLocaleDateString("hu-HU", {
+                      {parseSqlDateTimeLocal(appt.lesson_time).toLocaleDateString("hu-HU", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -250,7 +251,7 @@ export default function MyAppointmentsStudPage() {
                   <tr key={appt.id}>
                     <td>{appt.teacher.name}</td>
                     <td className="muted">
-                      {new Date(date).toLocaleDateString("hu-HU")}
+                      {parseYMDLocal(date).toLocaleDateString("hu-HU")}
                     </td>
                     <td className="muted">{appt.lesson_time.slice(11, 16)}</td>
                     <td className="actions">
@@ -294,7 +295,7 @@ export default function MyAppointmentsStudPage() {
                   <tr key={appt.id}>
                     <td>{appt.teacher.name}</td>
                     <td className="muted">
-                      {new Date(date).toLocaleDateString("hu-HU")}
+                      {parseYMDLocal(date).toLocaleDateString("hu-HU")}
                     </td>
                     <td className="muted">{appt.lesson_time.slice(11, 16)}</td>
                   </tr>

@@ -10,10 +10,11 @@ import {
   addSeenCancelledId,
   getSeenCancelledIds,
 } from "../services/cancellationSeen";
+import { parseYMDLocal, parseSqlDateTimeLocal } from "../utils/datetimeLocal";
 
 function groupByDate(appts) {
   return appts.reduce((acc, appt) => {
-    const date = appt.lesson_time.split(" ")[0];
+    const date = appt.lesson_time.slice(0, 10); // "YYYY-MM-DD"
     if (!acc[date]) acc[date] = [];
     acc[date].push(appt);
     return acc;
@@ -67,12 +68,12 @@ export default function TeacherAppointmentsPage() {
 
     // Jövőbeli aktív időpontok.
     const future = data.filter(
-      (a) => a.status === "active" && new Date(a.lesson_time) > now,
+      (a) => a.status === "active" && parseSqlDateTimeLocal(a.lesson_time) > now,
     );
 
     // Múltbeli aktív időpontok.
     const past = data.filter(
-      (a) => a.status === "active" && new Date(a.lesson_time) <= now,
+      (a) => a.status === "active" && parseSqlDateTimeLocal(a.lesson_time) <= now,
     );
 
     // csak EZ jelenhet meg töröltként tanárnál, és csak ami még nincs láttamozva
@@ -129,7 +130,7 @@ export default function TeacherAppointmentsPage() {
                   <div>
                     <div style={{ fontWeight: 800 }}>{appt.student.name}</div>
                     <div style={{ color: "rgba(180,165,168,0.95)" }}>
-                      {new Date(appt.lesson_time).toLocaleDateString("hu-HU", {
+                      {parseSqlDateTimeLocal(appt.lesson_time).toLocaleDateString("hu-HU", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -181,7 +182,7 @@ export default function TeacherAppointmentsPage() {
                   <tr key={appt.id}>
                     <td>{appt.student.name}</td>
                     <td className="muted">
-                      {new Date(date).toLocaleDateString("hu-HU")}
+                      {parseYMDLocal(date).toLocaleDateString("hu-HU")}
                     </td>
                     <td className="muted">{appt.lesson_time.slice(11, 16)}</td>
                     <td className="actions">
@@ -223,7 +224,7 @@ export default function TeacherAppointmentsPage() {
                   <tr key={appt.id}>
                     <td>{appt.student.name}</td>
                     <td className="muted">
-                      {new Date(date).toLocaleDateString("hu-HU")}
+                      {parseYMDLocal(date).toLocaleDateString("hu-HU")}
                     </td>
                     <td className="muted">{appt.lesson_time.slice(11, 16)}</td>
                   </tr>

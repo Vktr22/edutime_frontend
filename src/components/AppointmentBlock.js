@@ -1,4 +1,5 @@
 import AppointmentCard from "./AppointmentCard";
+import { parseYMDLocal } from "../utils/datetimeLocal";
 
 export default function AppointmentBlock({
   title,
@@ -24,7 +25,7 @@ export default function AppointmentBlock({
       {Object.keys(grouped).map((date) => (
         <div key={date} className="date-block">
           <h4>
-            {new Date(date).toLocaleDateString("hu-HU", {
+            {parseYMDLocal(date).toLocaleDateString("hu-HU", {
               weekday: "long",
               year: "numeric",
               month: "long",

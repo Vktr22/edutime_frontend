@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { parseSqlDateTimeLocal } from "../utils/datetimeLocal";
 
 /*
 ez a file ezert hasznos:
@@ -17,16 +18,16 @@ export function useAppointmentGrouping(appointments, mode) {
     const cancelled = appointments.filter((a) => a.status === cancelledStatus);
 
     const future = appointments.filter(
-      (a) => a.status === "active" && new Date(a.lesson_time) > now,
+      (a) => a.status === "active" && parseSqlDateTimeLocal(a.lesson_time) > now,
     );
 
     const past = appointments.filter(
-      (a) => a.status === "active" && new Date(a.lesson_time) <= now,
+      (a) => a.status === "active" && parseSqlDateTimeLocal(a.lesson_time) <= now,
     );
 
     function groupByDate(data) {
       return data.reduce((acc, appt) => {
-        const date = appt.lesson_time.split(" ")[0];
+        const date = appt.lesson_time.slice(0, 10);
         if (!acc[date]) acc[date] = [];
         acc[date].push(appt);
         return acc;
