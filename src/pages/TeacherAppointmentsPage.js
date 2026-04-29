@@ -52,6 +52,8 @@ export default function TeacherAppointmentsPage() {
         processAppointments(updated);
         return updated;
       });
+      // Jelzés a felhasználónak (diák oldalhoz hasonlóan)
+      alert("Időpont törölve.");
     } catch (err) {
       alert(
         err.response?.data?.message || "Nem sikerült törölni az időpontot.",
