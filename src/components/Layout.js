@@ -19,6 +19,7 @@ export default function Layout() {
 
   // A felhasználói adatokat a fejléc szövegéhez használjuk.
   const { user } = useAuth();
+  const displayName = user?.name || "felhasználó";
 
   // Home layout: hero szekció + felső navigáció + tartalom.
   if (isHome) {
@@ -30,7 +31,7 @@ export default function Layout() {
             <div className="home-hero-top">
               <div className="home-hero-titleBlock">
                 <h1 className="home-hero-title">
-                  Üdvözöllek, {user?.role || "felhasználó"}!
+                  Üdvözöllek, {displayName}!
                 </h1>
                 <div className="home-hero-sub">
                   Jogosultság: {user?.role || "-"}
