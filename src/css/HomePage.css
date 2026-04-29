@@ -95,6 +95,32 @@
   color: var(--text);
 }
 
+/* Home értesítés – ugyanolyan stílus, mint a többi kártya (sötét UI) */
+.home-notice {
+  margin-bottom: 18px;
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(197, 3, 55, 0.35);
+  background: linear-gradient(180deg,
+      rgba(26, 18, 20, 0.92) 0%,
+      rgba(26, 18, 20, 0.78) 100%);
+  box-shadow: var(--shadow-2);
+  cursor: pointer;
+
+  /* ne lehessen “kijelölni” véletlenül kattintáskor */
+  user-select: none;
+  padding: 20px;
+}
+
+.home-notice:hover {
+  border-color: rgba(197, 3, 55, 0.55);
+  transform: translateY(-1px);
+}
+
+.home-notice__hint {
+  color: rgba(180, 165, 168, 0.95);
+}
+
 /* Mobil nézet: a kétoszlopos rács egy oszlopra vált */
 @media (max-width: 900px) {
   .home-grid {
