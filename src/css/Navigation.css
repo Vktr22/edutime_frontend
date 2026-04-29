@@ -70,10 +70,12 @@
 
 /* ---------- Oldalsó navigáció (alkalmazás layout) ---------- */
 .nav--side {
-  height: calc(100vh - 52px); /* Közelítő érték, kis eltérés belefér */
+  /* nav height is governed by the aside (.app-sidebar). Keep nav
+     a column flex so spacer and bottom controls behave correctly. */
   display: flex;
   flex-direction: column;
   gap: 14px;
+  height: 100%;
 }
 
 .nav__brand--side {

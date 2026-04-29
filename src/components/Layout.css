@@ -20,6 +20,17 @@
             rgba(10, 5, 6, 0.75) 100%);
 }
 
+/* Make sidebar stick to viewport so its bottom area remains visible
+   when page content scrolls. Keep internal overflow auto so long navs
+   still scroll independently. */
+.app-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    align-self: flex-start;
+    overflow: auto;
+}
+
 /* Tartalomrész: a fő oldalblokk */
 .app-content {
     flex: 1;
