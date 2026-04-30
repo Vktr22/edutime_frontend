@@ -1,10 +1,7 @@
-/* src/css/Navigation.css */
-
 .nav {
   color: var(--text);
 }
 
-/* ---------- Felső navigáció (Home oldal) ---------- */
 .nav--top {
   width: 100%;
 }
@@ -68,10 +65,7 @@
   border-color: rgba(197, 3, 55, 0.55);
 }
 
-/* ---------- Oldalsó navigáció (alkalmazás layout) ---------- */
 .nav--side {
-  /* nav height is governed by the aside (.app-sidebar). Keep nav
-     a column flex so spacer and bottom controls behave correctly. */
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -125,7 +119,6 @@
   justify-content: flex-start;
 }
 
-/* Mobil nézet: a felső nav elemei több sorba törhetnek */
 @media (max-width: 900px) {
   .nav__row {
     flex-wrap: wrap;
@@ -138,7 +131,8 @@
   .nav__logout {
     margin-left: 0;
   }
-   .nav__brand {
+
+  .nav__brand {
     font-size: 22px;
   }
 

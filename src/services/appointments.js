@@ -7,59 +7,51 @@ import { myAxios } from "./api";
  * @param {string} lessonTime datetime string: YYYY-MM-DD HH:MM:SS
  */
 
-//bookappointment egyetlen feladata elkuldeni a foglalast
-//a token itt kerul headerbe->mert a backend auth:sanctumot hasznal
-//a body mezo neve lesson_time (merta backend auth ezt varja)
 export async function bookAppointment(token, teacherId, lessonTime) {
-  const { data } = await myAxios.post(
-    `/api/teachers/${teacherId}/appointments`,
-    { lesson_time: lessonTime },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  return data;
+    const { data } = await myAxios.post(
+        `/api/teachers/${teacherId}/appointments`,
+        { lesson_time: lessonTime },
+        { headers: { Authorization: `Bearer ${token}` } },
+    );
+    return data;
 }
 
-// Diák által kezdeményezett időponttörlés (státuszváltással a backendben)
 export async function cancelStudentAppointment(token, appointmentId) {
-  const { data } = await myAxios.delete(
-    `/api/student/appointments/${appointmentId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+    const { data } = await myAxios.delete(
+        `/api/student/appointments/${appointmentId}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    );
 
-  return data;
+    return data;
 }
 
-// Tanár által kezdeményezett jövőbeli időponttörlés (státuszváltással)
 export async function cancelTeacherAppointment(token, appointmentId) {
-  const { data } = await myAxios.delete(
-    `/api/teacher/appointments/${appointmentId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+    const { data } = await myAxios.delete(
+        `/api/teacher/appointments/${appointmentId}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    );
 
-  return data;
+    return data;
 }
-
 
 export async function fetchStudentAppointments(token) {
-  const { data } = await myAxios.get("/api/student/appointments", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
+    const { data } = await myAxios.get("/api/student/appointments", {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
 }
 
-//tanar idopontjai sajat
 export async function fetchTeacherAppointments(token) {
-  const { data } = await myAxios.get("/api/teacher/appointments", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
+    const { data } = await myAxios.get("/api/teacher/appointments", {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
 }
-

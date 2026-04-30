@@ -1,6 +1,3 @@
-/* src/css/NoPage.css */
-
-/* 404 oldal teljes képernyős háttérrel, középre igazított tartalommal */
 .nopage-shell {
   min-height: 100vh;
   display: grid;
@@ -12,14 +9,12 @@
   background-position: center;
 }
 
-/* Központi kártya a hibakód és navigációs üzenet számára */
 .nopage-card {
   width: min(760px, 100%);
   padding: 42px 28px 32px;
   text-align: center;
 }
 
-/* Nagyméretű 404 hibakód */
 .nopage-code {
   margin: 0;
   font-size: 86px;
@@ -29,14 +24,12 @@
   letter-spacing: 1px;
 }
 
-/* Rövid főcím a hibához */
 .nopage-title {
   margin: 16px 0 0;
   font-size: 34px;
   font-weight: 900;
 }
 
-/* Leíró szöveg a felhasználónak */
 .nopage-desc {
   margin: 12px auto 0;
   max-width: 560px;
@@ -44,14 +37,12 @@
   line-height: 1.6;
 }
 
-/* Gombokat tartalmazó műveleti sor */
 .nopage-actions {
   margin-top: 22px;
   display: flex;
   justify-content: center;
 }
 
-/* Visszanavigáló fő gomb */
 .nopage-btn {
   display: inline-flex;
   align-items: center;
@@ -68,7 +59,6 @@
   cursor: pointer;
 }
 
-/* Gomb hover visszajelzés */
 .nopage-btn:hover {
   filter: brightness(1.06);
 }

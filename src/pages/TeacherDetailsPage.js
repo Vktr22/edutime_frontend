@@ -8,33 +8,23 @@ import "../css/TeacherDetailsPage.css";
 import { parseSqlDateTimeLocal } from "../utils/datetimeLocal";
 
 export default function TeacherDetailsPage() {
-    /*
-        A useParams segítségével olvassuk ki az URL-ben lévő tanár azonosítót.
-        A useAuth a globális auth állapotot adja (felhasználó + betöltés).
-        A lokális state-ek a tanár adatokat, időpontokat és UI állapotokat kezelik.
-    */
     const { id } = useParams();
     const { user, loading } = useAuth();
 
-    // Tanár adatai és általános hibák.
     const [teacher, setTeacher] = useState(null);
     const [error, setError] = useState("");
 
-    // Foglalható idősávok betöltési állapota és hibakezelése.
     const [availableSlots, setAvailableSlots] = useState([]);
     const [loadingSlots, setLoadingSlots] = useState(false);
     const [slotError, setSlotError] = useState("");
 
-    // Kiválasztott idősávok és heti nézet állapota.
     const [selectedSlots, setSelectedSlots] = useState([]);
     const [weekStart, setWeekStart] = useState(getStartOfWeek(new Date()));
 
-    // Sikeres foglalás utáni visszajelző állapot.
     const [bookingSuccess, setBookingSuccess] = useState(false);
 
     const [isBooking, setIsBooking] = useState(false);
 
-    // A kiválasztott idősávok foglalása (több időpont egyszerre).
     const handleBooking = async () => {
         if (selectedSlots.length === 0) {
             alert("Kérlek válassz ki legalább egy időpontot!");
@@ -51,18 +41,15 @@ export default function TeacherDetailsPage() {
                 return;
             }
 
-            // ✅ MINDEN kiválasztott slot lefoglalása
             for (const slot of selectedSlots) {
                 await bookAppointment(token, id, slot.raw);
             }
 
             setBookingSuccess(true);
 
-            // ✅ Frissítjük a foglalható slotokat
             const refreshedSlots = await fetchAvailableSlots(token, id);
             setAvailableSlots(refreshedSlots);
 
-            // ✅ Reset kijelölések
             setSelectedSlots([]);
         } catch (err) {
             console.error("Booking error:", err);
@@ -75,7 +62,6 @@ export default function TeacherDetailsPage() {
         }
     };
 
-    // Foglalható idősávok betöltése az aktuális tanárhoz.
     useEffect(() => {
         if (!user || user.role !== "student") return;
 
@@ -93,7 +79,6 @@ export default function TeacherDetailsPage() {
             .finally(() => setLoadingSlots(false));
     }, [user, id]);
 
-    // Tanár részletes adatainak betöltése.
     useEffect(() => {
         if (!user || user.role !== "student") return;
 
@@ -107,7 +92,6 @@ export default function TeacherDetailsPage() {
             });
     }, [user, id]);
 
-    // Segédfüggvény: visszaadja az adott hét hétfői napját.
     function getStartOfWeek(date) {
         const d = new Date(date);
         const day = d.getDay();
@@ -115,7 +99,6 @@ export default function TeacherDetailsPage() {
         return new Date(d.setDate(diff));
     }
 
-    // Segédfüggvény: előállítja a kijelzett hét 7 napját.
     function getDaysOfWeek() {
         const days = [];
         for (let i = 0; i < 7; i++) {
@@ -127,16 +110,13 @@ export default function TeacherDetailsPage() {
     }
     const days = getDaysOfWeek();
 
-    // Előző hét utolsó pillanata, hogy a múltba léptetést korlátozhassuk.
     const prevWeekEnd = new Date(weekStart);
     prevWeekEnd.setDate(prevWeekEnd.getDate() - 1); // előző hét vasárnapja
     prevWeekEnd.setHours(23, 59, 59, 999);
 
-    // Mai nap 00:00-ra állítva az összehasonlításokhoz.
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Korai kilépési feltételek (guard clause-ok).
     if (loading) {
         return <p>Felhasználó betöltése...</p>;
     }
@@ -153,15 +133,12 @@ export default function TeacherDetailsPage() {
         return <p>Tanár betöltése...</p>;
     }
 
-    // Innentől csak a sikeres betöltési ág renderelődik.
     return (
         <div className="teacher-details">
-            {/* (opcionális) vissza link - ha kell, tehetünk rá ghost gomb stílust később */}
             <Link to="/teachers" style={{ color: "rgba(180,165,168,0.95)" }}>
                 ← Vissza a tanárokhoz
             </Link>
 
-            {/* Teacher info card */}
             <div className="card teacher-info">
                 <h2 className="teacher-info__name">{teacher.name}</h2>
 
@@ -177,7 +154,6 @@ export default function TeacherDetailsPage() {
                 </div>
             </div>
 
-            {/* Week bar */}
             <div className="weekbar">
                 <button
                     disabled={prevWeekEnd < today}
@@ -219,7 +195,6 @@ export default function TeacherDetailsPage() {
                 </button>
             </div>
 
-            {/* Week grid */}
             {loadingSlots && <p>Időpontok betöltése...</p>}
             {slotError && <p>{slotError}</p>}
 
@@ -259,7 +234,6 @@ export default function TeacherDetailsPage() {
                                             (isSelected ? " is-selected" : "")
                                         }
                                         onClick={() => {
-                                            // Ugyanarra az idősávra kattintva ki/be kapcsoljuk a kijelölést.
                                             setSelectedSlots((prev) => {
                                                 if (isSelected)
                                                     return prev.filter(
@@ -285,7 +259,6 @@ export default function TeacherDetailsPage() {
                                 );
                             })}
 
-                        {/* empty state per-day */}
                         {availableSlots.filter(
                             (slot) =>
                                 parseSqlDateTimeLocal(
@@ -301,7 +274,6 @@ export default function TeacherDetailsPage() {
                 ))}
             </div>
 
-            {/* Selected panel (always show like Figma) */}
             <div className="card selected-panel">
                 <h3 className="selected-title">
                     <span style={{ color: "#c50337" }}>📅</span> Kiválasztott
@@ -363,7 +335,6 @@ export default function TeacherDetailsPage() {
                 )}
             </div>
 
-            {/* bookingSuccess maradhat egyelőre natív alert/box - később toast */}
             {bookingSuccess && (
                 <div className="card" style={{ padding: 18 }}>
                     <strong>Sikeres foglalás!</strong>

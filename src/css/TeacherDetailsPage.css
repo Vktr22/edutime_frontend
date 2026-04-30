@@ -1,24 +1,18 @@
-/* src/css/TeacherDetailsPage.css */
-
-/* Oldal fő konténere: egymás alatti nagyobb blokkok */
 .teacher-details {
   display: grid;
   gap: 18px;
 }
 
-/* Tanár alapinformációs kártya */
 .teacher-info {
   padding: 22px;
 }
 
-/* Tanár neve kiemelt címsorként */
 .teacher-info__name {
   margin: 0;
   font-size: 34px;
   font-weight: 900;
 }
 
-/* Tanár meta sorai (pl. email, egyéb adatok) */
 .teacher-info__rows {
   margin-top: 14px;
   display: grid;
@@ -26,19 +20,16 @@
   color: rgba(180, 165, 168, 0.95);
 }
 
-/* Egy-egy meta sor: ikon + szöveg */
 .teacher-info__row {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* Kiemelt (accent) elemek színezése */
 .teacher-info__row .accent {
   color: var(--accent);
 }
 
-/* Heti navigációs sáv (hét váltása, aktuális hét kiírása) */
 .weekbar {
   display: flex;
   align-items: center;
@@ -50,7 +41,6 @@
   font-size: 22px;
 }
 
-/* Hétváltó nyilak gombstílusa */
 .weekbar button {
   border: 0;
   background: transparent;
@@ -59,13 +49,11 @@
   cursor: pointer;
 }
 
-/* Letiltott nyilak (pl. amikor nem lehet tovább lépni) */
 .weekbar button:disabled {
   opacity: 0.25;
   cursor: not-allowed;
 }
 
-/* Heti napok rácsa (desktopon 7 oszlop) */
 .week-grid {
   margin-top: 10px;
   display: grid;
@@ -73,7 +61,6 @@
   gap: 14px;
 }
 
-/* Egy nap oszlopa a heti rácsban */
 .day-col {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -83,7 +70,6 @@
   min-height: 260px;
 }
 
-/* Naposzlop fejléc (napnév + dátum) */
 .day-head {
   text-align: center;
   padding-bottom: 12px;
@@ -91,20 +77,17 @@
   margin-bottom: 12px;
 }
 
-/* Nap neve (hétfő, kedd...) */
 .day-head .dow {
   font-weight: 900;
   letter-spacing: 0.3px;
 }
 
-/* Dátum sor a napnév alatt */
 .day-head .date {
   margin-top: 4px;
   color: rgba(180, 165, 168, 0.95);
   font-size: 13px;
 }
 
-/* Foglalható idősáv gomb */
 .slot-btn {
   width: 100%;
   border: 1px solid rgba(62, 36, 40, 0.9);
@@ -117,31 +100,26 @@
   font-weight: 800;
 }
 
-/* Idősáv hover kiemelés */
 .slot-btn:hover {
   border-color: rgba(197, 3, 55, 0.55);
 }
 
-/* Kiválasztott idősáv vizuális állapota */
 .slot-btn.is-selected {
   border-color: rgba(197, 3, 55, 0.95);
   box-shadow: 0 0 0 3px rgba(197, 3, 55, 0.14);
   background: rgba(197, 3, 55, 0.12);
 }
 
-/* Szöveg, ha az adott napra nincs elérhető idősáv */
 .no-slot {
   margin-top: 26px;
   text-align: center;
   color: rgba(180, 165, 168, 0.9);
 }
 
-/* Jobb oldali kiválasztott időpontok panel */
 .selected-panel {
   padding: 22px;
 }
 
-/* Panel címsor ikon + szöveg */
 .selected-title {
   display: flex;
   align-items: center;
@@ -151,21 +129,18 @@
   font-weight: 900;
 }
 
-/* Üres állapot szöveg, ha nincs kiválasztott idősáv */
 .selected-empty {
   margin-top: 22px;
   text-align: center;
   color: rgba(180, 165, 168, 0.9);
 }
 
-/* Kiválasztott idősávok listája */
 .selected-list {
   margin-top: 14px;
   display: grid;
   gap: 12px;
 }
 
-/* Egy kiválasztott idősáv sor (idő + törlés gomb) */
 .selected-item {
   display: flex;
   align-items: center;
@@ -176,7 +151,6 @@
   background: rgba(0, 0, 0, 0.18);
 }
 
-/* Eltávolítás gomb a kiválasztott idősáv sorában */
 .selected-item button {
   border: 0;
   background: transparent;
@@ -185,7 +159,6 @@
   cursor: pointer;
 }
 
-/* Összesítő blokk (darabszám/időtartam/stb.) */
 .selected-total {
   margin-top: 16px;
   padding-top: 14px;
@@ -193,7 +166,6 @@
   color: rgba(245, 244, 240, 0.9);
 }
 
-/* Fő CTA gomb a foglalás véglegesítéséhez */
 .selected-cta {
   margin-top: 18px;
   width: 100%;
@@ -212,19 +184,16 @@
   cursor: not-allowed;
 }
 
-/* CTA hover visszajelzés */
 .selected-cta:hover {
   filter: brightness(1.06);
 }
 
-/* Tablet méret: heti rács 7 oszlopról 2 oszlopra vált */
 @media (max-width: 1100px) {
   .week-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Mobil méret: heti rács egyoszlopos listára vált */
 @media (max-width: 700px) {
   .week-grid {
     grid-template-columns: 1fr;
